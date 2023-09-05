@@ -1,2 +1,6 @@
-<h2>Products:</h2>
-<app-product *ngFor="let product of products" [product] ="product"></app-product>
+<div>
+    <h2>Products:</h2>
+    <button (click)="addProduct()">Add Product</button>
+    <app-product-details *ngIf="selectedProduct" [product]="selectedProduct" [isEdit]=isEdit (addProduct)="postProduct($event)" (editProduct)="putProduct($event)"></app-product-details>
+    <app-product *ngFor="let product of products" [product] ="product" (edit)="editProduct(product)" (delete)="deleteProduct(product)"></app-product>
+</div>

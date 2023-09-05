@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { Product } from '../product';
 
 @Component({
@@ -8,4 +8,16 @@ import { Product } from '../product';
 })
 export class ProductComponent {
   @Input() product = {} as Product;
+  @Output() edit = new EventEmitter<Product>();
+  @Output() delete = new EventEmitter<Product>();
+
+  editProduct(product: Product) {
+    // emit event
+    this.edit.emit(product);
+  }
+
+  deleteProduct(product: Product) {
+    // emit event
+    this.delete.emit(product);
+  }
 }

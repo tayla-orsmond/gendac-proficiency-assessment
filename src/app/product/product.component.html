@@ -3,9 +3,8 @@
     <p>{{product.name}}</p>
     <p>{{product.price}}</p>
     <p>{{product.category}}</p>
+    <span class="actions">
+        <button (click)="editProduct(product)">Edit</button>
+        <button (click)="deleteProduct(product)">Delete</button>
+    </span>
 </div>
-
-<!-- <div>
-    <label for="name">Name</label>
-    <input type="text" id="name" [(ngModel)]="product.name" placeholder="name">
-</div> -->
