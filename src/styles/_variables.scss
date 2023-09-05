@@ -1,0 +1,32 @@
+/* Variables */
+
+// Fonts
+$font-main: Arial, sans-serif; // Main text, <p>
+$font-title: Arial, sans-serif; // Titles, <h1>
+$font-heading: Arial, sans-serif; // Headings, <h2> - <h6>
+
+// Font sizes
+$font-size-base: 1rem;
+$font-size-sm: 0.875rem;
+$font-size-md: 1.25rem; 
+$font-size-lg: 1.5rem; 
+
+// Font weights
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-bold: 700; 
+
+// Colors
+$background-color: #0000; // Background color
+
+$theme-colors: (
+    main: #071422, // Main text color
+    primary: #5c8dc1,
+    secondary: #6c757d,
+    success: #28a745,
+    danger: #dc3545,
+    light: #f8f9fa,
+    dark: #343a40,
+    white: #fff,
+    black: #000,
+);

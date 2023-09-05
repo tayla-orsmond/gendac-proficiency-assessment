@@ -1,1 +1,28 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global Styles */
+@use 'styles/variables' as *;
+@use 'styles/reset';
+
+body {
+  background-color: $background-color;
+  color: map-get($map: $theme-colors, $key: 'main');
+  font-family: $font-main;
+  font-size: $font-size-base;
+}
+
+h1,
+h2 {
+  font-family: $font-heading;
+  font-weight: $font-weight-bold;
+}
+
+h1 {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: map-get($map: $theme-colors, $key: 'primary');
+}
+
+h2 {
+  font-size: $font-size-md;
+  font-weight: $font-weight-bold;
+  color: map-get($map: $theme-colors, $key: 'secondary');
+}
