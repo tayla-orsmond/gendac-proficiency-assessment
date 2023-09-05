@@ -6,6 +6,7 @@ import { Product } from '../product';
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss'],
+  providers: [ProductService],
 })
 export class ProductListComponent {
   constructor(private productService: ProductService) {}
@@ -35,6 +36,7 @@ export class ProductListComponent {
     this.productService.addProduct(product)
       .subscribe(() => {
         this.getProductList();
+        this.formVisible = false;
       });
   }
 
@@ -48,7 +50,14 @@ export class ProductListComponent {
     this.productService.updateProduct(product)
       .subscribe(() => {
         this.getProductList();
+        this.formVisible = false;
       });
+  }
+
+  cancelEdit(): void {
+    this.selectedProduct = {} as Product;
+    this.isEdit = false;
+    this.formVisible = false;
   }
 
   deleteProduct(product: Product): void {
