@@ -23,10 +23,12 @@ export class ProductService {
     return of(product);
   }
 
-  deleteProduct(product: Product): Observable<Product> {
-    const index = PRODUCTS.findIndex((p) => p.id === product.id);
-    PRODUCTS.splice(index, 1);
-    return of(product);
+  deleteProduct(products: Product[]): Observable<Product[]> {
+    products.forEach((p) => {
+      const index = PRODUCTS.findIndex((product) => product.id === p.id);
+      PRODUCTS.splice(index, 1);
+    });
+    return of(products);
   }
 
   updateProduct(product: Product): Observable<Product> {

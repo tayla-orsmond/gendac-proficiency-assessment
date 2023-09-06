@@ -9,15 +9,21 @@ import { Product } from '../product';
 export class ProductComponent {
   @Input() product = {} as Product;
   @Output() edit = new EventEmitter<Product>();
-  @Output() delete = new EventEmitter<Product>();
+  @Output() toggleSelect = new EventEmitter<Product>();
+  // @Output() delete = new EventEmitter<Product>();
 
   editProduct(product: Product) {
     // emit event
     this.edit.emit(product);
   }
 
-  deleteProduct(product: Product) {
+  // deleteProduct(product: Product) {
+  //   // emit event
+  //   this.delete.emit(product);
+  // }
+
+  toggleProductSelect() {
     // emit event
-    this.delete.emit(product);
+    this.toggleSelect.emit(this.product);
   }
 }

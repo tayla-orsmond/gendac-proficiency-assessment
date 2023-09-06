@@ -36,7 +36,7 @@ export class ProductDetailsComponent {
     this.productForm.setValue({
       name: this.product?.name.split(' ')[1] ?? '',
       category: this.product?.category ?? 1,
-      price: this.product?.price ?? 0.00,
+      price: this.product?.price ?? '',
     });
   }
 

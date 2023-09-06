@@ -1,10 +1,11 @@
 <div>
+    <input type="checkbox" (change)="toggleProductSelect()" [checked]="false">
     <p>{{product.id}}</p>
     <p>{{product.name.split(' ')[1]}}</p>
     <p>{{product.price}}</p>
     <p>{{product.category}}</p>
     <span class="actions">
         <button (click)="editProduct(product)">Edit</button>
-        <button (click)="deleteProduct(product)">Delete</button>
+        <!-- <button (click)="deleteProduct(product)">Delete</button> -->
     </span>
 </div>

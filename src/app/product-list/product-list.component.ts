@@ -16,7 +16,8 @@ export class ProductListComponent {
   }
 
   products: Product[] = [];
-  selectedProduct: Product = {} as Product;
+  selectedProducts: Product[] = [];
+  activeEditProduct: Product = {} as Product;
   isEdit = false;
   formVisible = false;
 
@@ -27,7 +28,7 @@ export class ProductListComponent {
 
   // add
   addProduct(): void {
-    this.selectedProduct = {} as Product;
+    this.activeEditProduct = {} as Product;
     this.isEdit = false;
     this.formVisible = true;
   }
@@ -41,7 +42,7 @@ export class ProductListComponent {
   }
 
   editProduct(product : Product): void {
-    this.selectedProduct = product;
+    this.activeEditProduct = product;
     this.isEdit = true;
     this.formVisible = true;
   }
@@ -55,13 +56,13 @@ export class ProductListComponent {
   }
 
   cancelEdit(): void {
-    this.selectedProduct = {} as Product;
+    this.activeEditProduct = {} as Product;
     this.isEdit = false;
     this.formVisible = false;
   }
 
-  deleteProduct(product: Product): void {
-    this.productService.deleteProduct(product)
+  deleteProduct(products: Product[]): void {
+    this.productService.deleteProduct(products)
       .subscribe(() => {
         this.getProductList();
       });
