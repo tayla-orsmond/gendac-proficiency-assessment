@@ -1,44 +1,54 @@
-import { Component, Input, EventEmitter, Output} from '@angular/core';
+import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Product } from '../product';
 
 @Component({
   selector: 'app-product-details',
   templateUrl: './product-details.component.html',
-  styleUrls: ['./product-details.component.scss']
+  styleUrls: ['./product-details.component.scss'],
 })
 export class ProductDetailsComponent {
-  @Input() product ?: Product;
-  @Input() isEdit : boolean = false;
+  @Input() product?: Product;
+  @Input() isEdit: boolean = false;
   @Output() addProduct = new EventEmitter<Product>();
   @Output() editProduct = new EventEmitter<Product>();
   @Output() cancelEdit = new EventEmitter<void>();
 
   productForm = new FormGroup({
-    name: new FormControl(this.product?.name ?? '', [Validators.minLength(4)]),
-    category: new FormControl(this.product?.category ?? ''),
-    price: new FormControl(this.product?.price ?? '')
+    name: new FormControl(this.product?.name.split(' ')[1] ?? '', [
+      Validators.minLength(8),
+      Validators.maxLength(12),
+      Validators.pattern(/^[A-Z]{3}[\d]{5,}$/)
+    ]),
+    category: new FormControl(this.product?.category ?? 1, [
+      Validators.minLength(1),
+      Validators.pattern(/^[\d]$/)
+    ]),
+    price: new FormControl(this.product?.price ?? '', [
+      Validators.minLength(1),
+      Validators.pattern(/^\d+(\.\d{1,2})?$/)
+    ]),
   }, Validators.required);
 
-  constructor() { }
+  constructor() {}
 
-  ngOnChanges(){
+  ngOnChanges() {
     this.productForm.setValue({
-      name: this.product?.name ?? '',
-      category: this.product?.category ?? '',
-      price: this.product?.price ?? '',
-    })
+      name: this.product?.name.split(' ')[1] ?? '',
+      category: this.product?.category ?? 1,
+      price: this.product?.price ?? 0.00,
+    });
   }
 
   // Events
-  submit() : void {
+  submit(): void {
     if (this.product && this.productForm.valid) {
       const product: Product = {
         id: this.product.id ?? 0,
-        name: this.productForm.value.name ?? '',
-        category: this.productForm.value.category as number ?? 0,
-        price: this.productForm.value.price as number ?? 0.00
-      }
+        name: 'Product ' + (this.productForm.value.name ?? ''),
+        category: (this.productForm.value.category as number) ?? 0,
+        price: (this.productForm.value.price as number) ?? 0.0,
+      };
       if (this.isEdit) {
         this.editProduct.emit(product);
       } else {
