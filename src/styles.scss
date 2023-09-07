@@ -1,28 +1,38 @@
 /* Global Styles */
 @use 'styles/variables' as *;
+@use 'styles/mixins' as *;
 @use 'styles/reset';
 
 body {
   background-color: $background-color;
-  color: map-get($map: $theme-colors, $key: 'main');
-  font-family: $font-main;
-  font-size: $font-size-base;
-}
+  color: map-get($map: $theme-colors, $key: 'black');
+  
+  p {
+    @include text-main;
+  }
 
-h1,
-h2 {
-  font-family: $font-heading;
-  font-weight: $font-weight-bold;
-}
+  h1 {
+    @include text-title;
+  }
+  
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @include text-heading;
+  }
 
-h1 {
-  font-size: $font-size-lg;
-  font-weight: $font-weight-bold;
-  color: map-get($map: $theme-colors, $key: 'primary');
-}
+  small,
+  .error-text  {
+    @include text-small ;
+  }  
 
-h2 {
-  font-size: $font-size-md;
-  font-weight: $font-weight-bold;
-  color: map-get($map: $theme-colors, $key: 'secondary');
+  .large-text {
+    @include text-large;
+  }
+
+  button {
+    @include text-buttons;
+  }
 }

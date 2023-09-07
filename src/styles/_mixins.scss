@@ -1,0 +1,92 @@
+/* Mixins */
+@use 'variables' as *;
+
+// Basic mixins for text styling
+
+@mixin text-main {
+    // Main text, <p>
+    font-family: $font-main;
+    font-size: $font-size-base;
+}
+
+@mixin text-heading {
+    // Headings, <h2> - <h6>
+    font-family: $font-heading;
+    font-size: $font-size-heading;
+    font-weight: $font-weight-semibold;
+}
+
+@mixin text-title {
+    // Titles, <h1>
+    font-family: $font-title;
+    font-size: $font-size-title;
+    font-weight: $font-weight-bold;
+}
+
+@mixin text-small {
+    // Small text, <small>
+    font-family: $font-main;
+    font-size: $font-size-sm;
+}
+
+@mixin text-large {
+    // Larger text, but not headings
+    font-family: $font-main;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+}
+
+@mixin text-buttons {
+    // Button text
+    font-family: $font-main;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+}
+
+
+// Basic mixins for buttons
+
+@mixin button-primary {
+    // Main button
+    background-color: map-get($map: $theme-colors, $key: 'primary');
+    color: map-get($map: $theme-colors, $key: 'white');
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        background-color: darken(map-get($map: $theme-colors, $key: 'primary'), 10%);
+    }
+}
+
+@mixin button-secondary {
+    // Secondary button
+    background-color: map-get($map: $theme-colors, $key: 'secondary');
+    color: map-get($map: $theme-colors, $key: 'white');
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        background-color: darken(map-get($map: $theme-colors, $key: 'secondary'), 10%);
+    }
+}
+
+@mixin button-tertiary {
+    // Tertiary button
+    background-color: map-get($map: $theme-colors, $key: 'tertiary');
+    color: map-get($map: $theme-colors, $key: 'white');
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        background-color: darken(map-get($map: $theme-colors, $key: 'tertiary'), 10%);
+    }
+}
