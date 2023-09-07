@@ -1,29 +1,25 @@
 import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { Product } from '../product';
+import { ProductService } from '../product.service';
 
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
   styleUrls: ['./product.component.scss']
 })
-export class ProductComponent {
+export class ProductComponent { // display product details and emit events when user interacts with the component
   @Input() product = {} as Product;
-  @Output() edit = new EventEmitter<Product>();
-  @Output() toggleSelect = new EventEmitter<Product>();
-  // @Output() delete = new EventEmitter<Product>();
+  @Output() toggleSelect = new EventEmitter<number>();
 
-  editProduct(product: Product) {
-    // emit event
-    this.edit.emit(product);
+  constructor(private productService: ProductService) { }
+
+  editProduct() {
+    // use service to edit product
+    this.productService.editProduct(this.product);
   }
-
-  // deleteProduct(product: Product) {
-  //   // emit event
-  //   this.delete.emit(product);
-  // }
 
   toggleProductSelect() {
     // emit event
-    this.toggleSelect.emit(this.product);
+    this.toggleSelect.emit(this.product.id);
   }
 }

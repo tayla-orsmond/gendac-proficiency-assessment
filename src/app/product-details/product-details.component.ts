@@ -1,6 +1,7 @@
-import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Product } from '../product';
+import { ProductService } from '../product.service';
 
 @Component({
   selector: 'app-product-details',
@@ -8,59 +9,77 @@ import { Product } from '../product';
   styleUrls: ['./product-details.component.scss'],
 })
 export class ProductDetailsComponent {
-  @Input() product?: Product;
-  @Input() isEdit: boolean = false;
-  @Output() addProduct = new EventEmitter<Product>();
-  @Output() editProduct = new EventEmitter<Product>();
-  @Output() cancelEdit = new EventEmitter<void>();
+  // form for adding and editing products (name, category, price) - make sure to validate
+  @Input() activeEditProduct?: Product;
+  isEdit: boolean = false;
+  formVisible: boolean = false;
+  productForm = new FormGroup(
+    {
+      name: new FormControl(this.activeEditProduct?.name.split(' ')[1] ?? '', [
+        Validators.minLength(8),
+        Validators.maxLength(12),
+        Validators.pattern(/^[A-Z]{3}[\d]{5,}$/),
+      ]),
+      category: new FormControl(this.activeEditProduct?.category ?? 1, [
+        Validators.minLength(1),
+        Validators.pattern(/^[\d]$/),
+      ]),
+      price: new FormControl(this.activeEditProduct?.price ?? '', [
+        Validators.minLength(1),
+        Validators.pattern(/^\d+(\.\d{1,2})?$/),
+      ]),
+    },
+    Validators.required
+  );
 
-  productForm = new FormGroup({
-    name: new FormControl(this.product?.name.split(' ')[1] ?? '', [
-      Validators.minLength(8),
-      Validators.maxLength(12),
-      Validators.pattern(/^[A-Z]{3}[\d]{5,}$/)
-    ]),
-    category: new FormControl(this.product?.category ?? 1, [
-      Validators.minLength(1),
-      Validators.pattern(/^[\d]$/)
-    ]),
-    price: new FormControl(this.product?.price ?? '', [
-      Validators.minLength(1),
-      Validators.pattern(/^\d+(\.\d{1,2})?$/)
-    ]),
-  }, Validators.required);
+  constructor(private productService: ProductService) {}
 
-  constructor() {}
-
-  ngOnChanges() {
-    this.productForm.setValue({
-      name: this.product?.name.split(' ')[1] ?? '',
-      category: this.product?.category ?? 1,
-      price: this.product?.price ?? '',
+  // Lifecycle Hooks
+  ngOnInit(): void {
+    this.productService.editProductEventListener().subscribe((product) => {
+      this.activeEditProduct = product;
+      this.populateForm();
     });
+    this.formVisible = false;
+  }
+
+  // Helpers
+  populateForm(): void {
+    this.productForm.setValue({
+      name: this.activeEditProduct?.name
+        ? this.activeEditProduct?.name.split(' ')[1]
+        : '',
+      category: this.activeEditProduct?.category ?? 1,
+      price: this.activeEditProduct?.price ?? '',
+    });
+    if(this.activeEditProduct?.name) { // if product name exists (i.e., existing product), then form is visible and in edit mode
+      this.isEdit = true;
+    }
+    this.formVisible = true;
   }
 
   // Events
   submit(): void {
-    if (this.product && this.productForm.valid) {
+    if (this.activeEditProduct && this.productForm.valid) {
       const product: Product = {
-        id: this.product.id ?? 0,
+        id: this.activeEditProduct.id ?? 0,
         name: 'Product ' + (this.productForm.value.name ?? ''),
         category: (this.productForm.value.category as number) ?? 0,
         price: (this.productForm.value.price as number) ?? 0.0,
       };
       if (this.isEdit) {
-        this.editProduct.emit(product);
+        this.productService.updateProduct(product);
       } else {
-        this.addProduct.emit(product);
+        this.productService.addProduct(product);
       }
-      this.productForm.reset();
-      this.product = {} as Product;
+      this.cancel(); // close form and reset
     }
   }
 
   cancel(): void {
-    this.cancelEdit.emit();
-    this.product = {} as Product;
+    this.activeEditProduct = {} as Product;
+    this.productForm.reset();
+    this.isEdit = false;
+    this.formVisible = false;
   }
 }

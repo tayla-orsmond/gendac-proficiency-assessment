@@ -1,4 +1,4 @@
-<div *ngIf="product">
+<div [hidden]="!formVisible">
     <h2>{{isEdit ? "Edit" : "Add"}} Product:</h2>
     <form [formGroup]="productForm" (submit)="submit()">
         <label for="name">Product:</label>
