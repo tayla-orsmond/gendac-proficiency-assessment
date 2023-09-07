@@ -19,17 +19,19 @@ export class ProductDetailsComponent {
         Validators.minLength(8),
         Validators.maxLength(12),
         Validators.pattern(/^[A-Z]{3}[\d]{5,}$/),
+        Validators.required
       ]),
       category: new FormControl(this.activeEditProduct?.category ?? 1, [
         Validators.minLength(1),
         Validators.pattern(/^[\d]$/),
+        Validators.required
       ]),
       price: new FormControl(this.activeEditProduct?.price ?? '', [
         Validators.minLength(1),
         Validators.pattern(/^\d+(\.\d{1,2})?$/),
+        Validators.required
       ]),
-    },
-    Validators.required
+    }
   );
 
   constructor(private productService: ProductService) {}
@@ -52,7 +54,7 @@ export class ProductDetailsComponent {
       category: this.activeEditProduct?.category ?? 1,
       price: this.activeEditProduct?.price ?? '',
     });
-    if(this.activeEditProduct?.name) { // if product name exists (i.e., existing product), then form is visible and in edit mode
+    if(this.activeEditProduct?.name) { // if product name exists (i.e., editing existing product), then form is in edit mode
       this.isEdit = true;
     }
     this.formVisible = true;
@@ -60,7 +62,7 @@ export class ProductDetailsComponent {
 
   // Events
   submit(): void {
-    if (this.activeEditProduct && this.productForm.valid) {
+    if (this.activeEditProduct && this.productForm.valid && this.productForm.dirty) {
       const product: Product = {
         id: this.activeEditProduct.id ?? 0,
         name: 'Product ' + (this.productForm.value.name ?? ''),

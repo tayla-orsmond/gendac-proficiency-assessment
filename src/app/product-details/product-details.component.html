@@ -13,11 +13,8 @@
             <option value="2">2</option>
             <option value="3">3</option>
         </select>
-        <p>{{productForm.value.name}}</p>
-        <p>{{productForm.value.category}}</p>
-        <p>{{productForm.value.price}}</p>
-        <p>{{productForm.status}}</p>
-        <button type="submit" [disabled]="!productForm.valid">{{isEdit ? "Update" : "Create"}} Product</button>
+        <!-- disable button if form is invalid or unchanged -->
+        <button type="submit" [disabled]="!productForm.valid || productForm.pristine">{{isEdit ? "Update" : "Create"}} Product</button>
         <button (click)="cancel()">Cancel</button>
     </form>
 </div>
