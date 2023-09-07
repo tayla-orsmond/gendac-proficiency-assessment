@@ -36,6 +36,11 @@ export class ProductDashboardComponent { // a dashboard component that displays 
   }
 
   deleteProduct(products: number[]): void {
+    // Confirm deletion
+    if(!confirm("Are you sure you want to delete the selected products?")) {
+      return;
+    }
+    
     this.productService.deleteProduct(products)
       .subscribe(() => {
         this.getProductList();

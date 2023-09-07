@@ -6,15 +6,21 @@
 body {
   background-color: $background-color;
   color: map-get($map: $theme-colors, $key: 'black');
-  
-  p {
+
+  p,
+  label,
+  input,
+  span,
+  select,
+  option,
+  a {
     @include text-main;
   }
 
   h1 {
     @include text-title;
   }
-  
+
   h2,
   h3,
   h4,
@@ -24,9 +30,9 @@ body {
   }
 
   small,
-  .error-text  {
-    @include text-small ;
-  }  
+  .error-text {
+    @include text-small;
+  }
 
   .large-text {
     @include text-large;
