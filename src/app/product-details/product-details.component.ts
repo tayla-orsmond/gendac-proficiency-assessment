@@ -17,8 +17,8 @@ export class ProductDetailsComponent {
     {
       name: new FormControl(this.activeEditProduct?.name.split(' ')[1] ?? '', [
         Validators.minLength(8),
-        Validators.maxLength(12),
-        Validators.pattern(/^[A-Z]{3}[\d]{5,}$/),
+        Validators.maxLength(8),
+        Validators.pattern(/^[a-zA-Z]{3}[\d]{5}$/),
         Validators.required
       ]),
       category: new FormControl(this.activeEditProduct?.category ?? 1, [
@@ -49,7 +49,7 @@ export class ProductDetailsComponent {
   populateForm(): void {
     this.productForm.setValue({
       name: this.activeEditProduct?.name
-        ? this.activeEditProduct?.name.split(' ')[1]
+        ? this.activeEditProduct?.name.split(' ')[1].toUpperCase()
         : '',
       category: this.activeEditProduct?.category ?? 1,
       price: this.activeEditProduct?.price ?? '',
@@ -65,7 +65,7 @@ export class ProductDetailsComponent {
     if (this.activeEditProduct && this.productForm.valid && this.productForm.dirty) {
       const product: Product = {
         id: this.activeEditProduct.id ?? 0,
-        name: 'Product ' + (this.productForm.value.name ?? ''),
+        name: 'Product ' + (this.productForm.value.name?.toUpperCase() ?? ''),
         category: (this.productForm.value.category as number) ?? 0,
         price: (this.productForm.value.price as number) ?? 0.0,
       };
