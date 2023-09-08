@@ -29,7 +29,7 @@ mat-header-cell,
 // Columns
 .mat-column-select{
     overflow: initial;
-    flex: 0 0 5%;
+    max-width: fit-content;
     border-right: 1px solid map-get($map: $theme-colors, $key: 'light') !important;
 }
 

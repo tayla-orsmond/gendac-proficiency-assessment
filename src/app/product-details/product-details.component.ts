@@ -41,6 +41,7 @@ export class ProductDetailsComponent {
     this.productService.productEditEvent$.subscribe((product) => {
       this.activeEditProduct = product;
       this.populateForm();
+      console.log("product-details.component.ts: productEditEvent$ subscription, product:", product);
     });
     this.formVisible = false;
   }
@@ -70,8 +71,10 @@ export class ProductDetailsComponent {
         price: (this.productForm.value.price as number) ?? 0.0,
       };
       if (this.isEdit) {
+        console.log("product-details.component.ts: submit() - calling productService.updateProduct() with product:", product);
         this.productService.updateProduct(product);
       } else {
+        console.log("product-details.component.ts: submit() - calling productService.addProduct() with product:", product);
         this.productService.addProduct(product);
       }
       this.cancel(); // close form and reset

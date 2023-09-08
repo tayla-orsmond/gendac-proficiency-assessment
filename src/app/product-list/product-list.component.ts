@@ -17,6 +17,7 @@ import {
   merge,
   tap,
 } from 'rxjs';
+import { MatTable } from '@angular/material/table';
 
 @Component({
   selector: 'app-product-list',
@@ -42,17 +43,26 @@ export class ProductListComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('filter') filter!: ElementRef;
+  @ViewChild(MatTable) table!: MatTable<Product>;
 
   constructor(private productService: ProductService) {}
 
   ngOnInit(): void {
     this.dataSource = new ProductListDataSource(this.productService);
-    this.dataSource.product$.subscribe((products: Product[]) => (this.products = products));
     // this.dataSource.loadProducts();
     //this.dataSource.loadLessons(this.course.id, '', 'asc', 0, 3);
+    // this.productService.productChangeEvent$.subscribe((products) => {
+    //   this.dataSource.loadProducts();
+    //   console.log('product-list.component.ts: productChangeEvent$ subscription, products:', products);
+    // });
   }
 
   ngAfterViewInit() {
+    // set data source paginator and sort
+    this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    this.table.dataSource = this.dataSource;
+    
     fromEvent(this.filter.nativeElement, 'keyup')
       .pipe(
         debounceTime(150),
@@ -76,6 +86,7 @@ export class ProductListComponent {
   }
 
   loadProductsPage() {
+    console.log('[List]: loading products page because of sort or page event');
     this.dataSource.loadProducts();
     /*  this.dataSource.loadLessons(
             this.course.id,
@@ -103,6 +114,7 @@ export class ProductListComponent {
   }
 
   editProduct(product: Product) {
+    console.log('[List]: editing product', product);
     // use service to edit product
     this.dataSource.editProduct(product);
   }
@@ -111,33 +123,14 @@ export class ProductListComponent {
     this.dataSource.editProduct({} as Product);
   }
 
-  // selectProduct(pID: number): void {
-  //   if(this.selectedProductList.includes(pID)) {
-  //     this.selectedProductList.splice(this.selectedProductList.indexOf(pID), 1);
-  //   } else {
-  //     this.selectedProductList.push(pID);
-  //   }
-  // }
-
-  // selectAllProducts(allSelected : boolean): void {
-  //   if(allSelected) {
-  //     this.selectedProductList = this.dataSource.getValue().map(product => product.id);
-  //   } else {
-  //     this.selectedProductList = [];
-  //   }
-  // }
-
   deleteProduct(): void {
     // Confirm deletion
     if (!confirm('Are you sure you want to delete the selected products?')) {
       return;
     }
 
-    this.productService
-      .deleteProduct(this.selection.selected.map((product) => product.id))
-      .subscribe(() => {
-        this.selection.clear();
-        this.dataSource.loadProducts();
-      });
+    this.dataSource.deleteProduct(this.selection.selected.map((product) => product.id));
+    this.selection.clear();
+    this.loadProductsPage();
   }
 }
