@@ -2,22 +2,22 @@
     <h2>{{isEdit ? "Edit" : "Add"}} Product:</h2>
     <form [formGroup]="productForm" (submit)="submit()">
         <label for="name">Product:</label>
-        <input type="text" id="name" formControlName="name" value={{productForm.value.name}} placeholder="AAA00000"
+        <input type="text" id="name" formControlName="Name" value={{productForm.value.Name}} placeholder="AAA00000"
             required />
-        <span *ngIf="productForm.controls.name.errors?.['required']">Name is required</span>
-        <span *ngIf="productForm.controls.name.errors?.['pattern']">Name should take the form: ABC12345 (3 letters, 5 numbers)</span>
+        <span *ngIf="productForm.controls.Name.errors?.['required']">Name is required</span>
+        <span *ngIf="productForm.controls.Name.errors?.['pattern']">Name should take the form: ABC12345 (3 letters, 5 numbers)</span>
         <label for="price">Price:</label>
-        <input type="number" id="price" formControlName="price" value={{productForm.value.price}} placeholder="0.00"
+        <input type="number" id="price" formControlName="Price" value={{productForm.value.Price}} placeholder="0.00"
             min="0.00" step="0.01" required />
-        <span *ngIf="productForm.controls.price.errors?.['required']">Price is required</span>
-        <span *ngIf="productForm.controls.price.errors?.['min']">Price must be greater than 0</span>
+        <span *ngIf="productForm.controls.Price.errors?.['required']">Price is required</span>
+        <span *ngIf="productForm.controls.Price.errors?.['min']">Price must be greater than 0</span>
         <label for="category">Category:</label>
-        <select id="category" formControlName="category" value={{productForm.value.category}} required>
+        <select id="category" formControlName="Category" value={{productForm.value.Category}} required>
             <option value="1" selected>1</option>
             <option value="2">2</option>
             <option value="3">3</option>
         </select>
-        <span *ngIf="productForm.controls.category.errors?.['required']">Category is required</span>
+        <span *ngIf="productForm.controls.Category.errors?.['required']">Category is required</span>
         <!-- disable button if form is invalid or unchanged -->
         <button type="submit" [disabled]="!productForm.valid || productForm.pristine">{{isEdit ? "Update" : "Create"}} Product</button>
         <button (click)="cancel()">Cancel</button>

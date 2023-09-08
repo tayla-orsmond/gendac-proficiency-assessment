@@ -15,18 +15,18 @@ export class ProductDetailsComponent {
   formVisible: boolean = false;
   productForm = new FormGroup(
     {
-      name: new FormControl(this.activeEditProduct?.name.split(' ')[1] ?? '', [
+      Name: new FormControl(this.activeEditProduct?.Name.split(' ')[1] ?? '', [
         Validators.minLength(8),
         Validators.maxLength(8),
         Validators.pattern(/^[a-zA-Z]{3}[\d]{5}$/),
         Validators.required
       ]),
-      category: new FormControl(this.activeEditProduct?.category ?? 1, [
+      Category: new FormControl(this.activeEditProduct?.Category ?? 1, [
         Validators.minLength(1),
         Validators.pattern(/^[\d]$/),
         Validators.required
       ]),
-      price: new FormControl(this.activeEditProduct?.price ?? '', [
+      Price: new FormControl(this.activeEditProduct?.Price ?? '', [
         Validators.minLength(1),
         Validators.pattern(/^\d+(\.\d{1,2})?$/),
         Validators.required
@@ -49,13 +49,13 @@ export class ProductDetailsComponent {
   // Helpers
   populateForm(): void {
     this.productForm.setValue({
-      name: this.activeEditProduct?.name
-        ? this.activeEditProduct?.name.split(' ')[1].toUpperCase()
+      Name: this.activeEditProduct?.Name
+        ? this.activeEditProduct?.Name.split(' ')[1].toUpperCase()
         : '',
-      category: this.activeEditProduct?.category ?? 1,
-      price: this.activeEditProduct?.price ?? '',
+      Category: this.activeEditProduct?.Category ?? 1,
+      Price: this.activeEditProduct?.Price ?? '',
     });
-    if(this.activeEditProduct?.name) { // if product name exists (i.e., editing existing product), then form is in edit mode
+    if(this.activeEditProduct?.Name) { // if product name exists (i.e., editing existing product), then form is in edit mode
       this.isEdit = true;
     }
     this.formVisible = true;
@@ -65,10 +65,10 @@ export class ProductDetailsComponent {
   submit(): void {
     if (this.activeEditProduct && this.productForm.valid && this.productForm.dirty) {
       const product: Product = {
-        id: this.activeEditProduct.id ?? 0,
-        name: 'Product ' + (this.productForm.value.name?.toUpperCase() ?? ''),
-        category: (this.productForm.value.category as number) ?? 0,
-        price: (this.productForm.value.price as number) ?? 0.0,
+        Id: this.activeEditProduct.Id ?? 0,
+        Name: 'Product ' + (this.productForm.value.Name?.toUpperCase() ?? ''),
+        Category: (this.productForm.value.Category as number) ?? 0,
+        Price: (this.productForm.value.Price as number) ?? 0.0,
       };
       if (this.isEdit) {
         console.log("product-details.component.ts: submit() - calling productService.updateProduct() with product:", product);

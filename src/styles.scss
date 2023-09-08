@@ -15,14 +15,10 @@ $gendac-proficiency-assessment-warn: mat.define-palette($gendac-proficiency-asse
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$gendac-proficiency-assessment-theme: mat.define-light-theme((
-  color: (
-    primary: $gendac-proficiency-assessment-primary,
-    accent: $gendac-proficiency-assessment-accent,
-    warn: $gendac-proficiency-assessment-warn,
-    tertiary: $gendac-proficiency-assessment-tertiary-pallette
-  )
-));
+$gendac-proficiency-assessment-theme: mat.define-light-theme((color: (primary: $gendac-proficiency-assessment-primary,
+        accent: $gendac-proficiency-assessment-accent,
+        warn: $gendac-proficiency-assessment-warn,
+        tertiary: $gendac-proficiency-assessment-tertiary-pallette )));
 
 @include mat.all-component-themes($gendac-proficiency-assessment-theme);
 

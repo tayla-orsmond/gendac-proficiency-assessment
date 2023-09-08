@@ -20,6 +20,6 @@ export class ProductComponent { // display product details and emit events when 
 
   toggleProductSelect() {
     // emit event
-    this.toggleSelect.emit(this.product.id);
+    this.toggleSelect.emit(this.product.Id);
   }
 }

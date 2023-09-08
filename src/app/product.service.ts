@@ -1,23 +1,43 @@
 /* Service for managing products */
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, map, of } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Product } from './product';
-import { PRODUCTS } from './mock-products';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
   // Editing a product - passing data between product component and product-detail form component
-  private productChangeEvent = new BehaviorSubject<Product[]>([]);
+  private productChangeEvent = new BehaviorSubject<Product>({} as Product);
   private productEditEvent = new BehaviorSubject<Product>({} as Product);
 
   public productEditEvent$ = this.productEditEvent.asObservable();
   public productChangeEvent$ = this.productChangeEvent.asObservable();
 
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+    }),
+  };
+
+  private productsUrl = 'https://gendacproficiencytest.azurewebsites.net/API/ProductsAPI/';
+  //GET api/ProductsAPI
+  //GET api/ProductsAPI?page={page}&pageSize={pageSize}&orderBy={orderBy}&ascending={ascending}&filter={filter}
+  //GET api/ProductsAPI/{id}
+  //POST api/ProductsAPI
+  //PUT api/ProductsAPI/{id}
+  //DELETE api/ProductsAPI/{id}
+
+  constructor(private http: HttpClient) {}
+
   editProduct(product: Product): void {
-    console.log("editProduct in product.service.ts, passing value", product, "updating productEditEvent");
+    console.log(
+      'editProduct in product.service.ts, passing value',
+      product,
+      'updating productEditEvent'
+    );
     this.productEditEvent.next(product);
   }
 
@@ -28,49 +48,48 @@ export class ProductService {
 
   // TODO: Use API to get products
 
-  getProducts(): Observable<Product[]> {
-    /*
-       courseId:number, filter = '', sortOrder = 'asc',
-        pageNumber = 0, pageSize = 3):  Observable<Lesson[]> {
-
-        return this.http.get(URL HERE, {
-            params: new HttpParams()
-                .set('courseId', courseId.toString())
-                .set('filter', filter)
-                .set('sortOrder', sortOrder)
-                .set('pageNumber', pageNumber.toString())
-                .set('pageSize', pageSize.toString())
-        }).pipe(
-            map(res =>  res["payload"])
-        );
-    */
-    const products = of(PRODUCTS);
-    return products;
+  getProducts(
+    filter: string = '',
+    ascending: boolean = true,
+    page: number = 0,
+    pageSize: number = 10,
+    orderBy: string = 'id'
+  ): Observable<Product[]> {
+    // make http request to get products
+    // add extra filter handling for if filterBy is not 'none'
+    return this.http.get<Product[]>(this.productsUrl + '?filter=' + filter + '&ascending=' + ascending + '&page=' + page + '&pageSize=' + pageSize + '&orderBy=' + orderBy).pipe(map((res: { [x: string]: any; }) => res['Results']));
   }
 
   addProduct(product: Product): void {
-    console.log("addProduct in product.service.ts, passing value", product, "to PRODUCTS");
-    PRODUCTS.push(product);
-    this.productChangeEvent.next(PRODUCTS);
+    // make http request to add product
+    this.http.post<Product>(this.productsUrl, product, this.httpOptions).subscribe((product) => {
+      console.log('addProduct in product.service.ts, passing value', product, 'to PRODUCTS');
+      this.productChangeEvent.next(product);
+    });
   }
 
   updateProduct(product: Product): void {
-    console.log("updateProduct in product.service.ts, passing value", product, "to PRODUCTS");
-    const index = PRODUCTS.findIndex((p) => p.id === product.id);
-    PRODUCTS[index] = product;
-    this.productChangeEvent.next(PRODUCTS);
+    // make http request to update product
+    this.http.put<Product>(this.productsUrl + product.Id, product, this.httpOptions).subscribe((product) => {
+      console.log('updateProduct in product.service.ts, passing value', product, 'to PRODUCTS');
+      this.productChangeEvent.next(product);
+    });
   }
 
   deleteProduct(products: number[]): Observable<Product[]> {
     products.forEach((id) => {
-      const index = PRODUCTS.findIndex((p) => p.id === id);
-      PRODUCTS.splice(index, 1);
+      // make http request to delete product
+      setTimeout(() => {
+        this.http.delete<Product>(this.productsUrl + id, this.httpOptions).subscribe((product) => {
+          console.log('deleteProduct in product.service.ts, passing value', product, 'to PRODUCTS');
+        });
+      }, 100);
     });
-    return of(PRODUCTS);
+    return of([] as Product[]);
   }
 
   getProduct(id: number): Observable<Product> {
-    const product = PRODUCTS.find((p) => p.id === id)!;
-    return of(product);
+    // make http request to get product
+    return this.http.get<Product>(this.productsUrl + id);
   }
 }
