@@ -1,4 +1,6 @@
 /* Variables */
+@use '@angular/material' as mat;
+
 // Font imports:
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans&family=Open+Sans:wght@400;600;700&family=Roboto&display=swap');
 
@@ -32,4 +34,114 @@ $theme-colors: (
     'danger': #EF4646,
     'white': #FFF,
     'black': #4E4E4E,
+);
+
+/* Overwrite Material Design color palettes */
+
+$gendac-proficiency-assessment-primary-pallette: (
+    // create hues of the primary color #005DA8
+    50: #E0F1F9,
+    100: #B3D9F0,
+    200: #80C0E7,
+    300: #4DA7DE,
+    400: #2694D8,
+    500: #005DA8,
+    600: #004F91,
+    700: #00437A,
+    800: #003663,
+    900: #00294C,
+    // create contrasts of the primary color
+    contrast: (
+        50: rgba(black, 0.87),
+        100: rgba(black, 0.87),
+        200: rgba(black, 0.87),
+        300: white,
+        400: white,
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white
+    )
+);
+
+$gendac-proficiency-assessment-accent-pallette: (
+    // create hues of the accent color #D9282F
+    50: #FDE9E9,
+    100: #FACCCC,
+    200: #F6AFAF,
+    300: #F29797,
+    400: #F08585,
+    500: #D9282F,
+    600: #C5242B,
+    700: #B12027,
+    800: #9D1C23,
+    900: #89181F,
+    // create contrasts of the accent color
+    contrast: (
+        50: rgba(0, 0, 0, 0.87),
+        100: rgba(0, 0, 0, 0.87),
+        200: rgba(0, 0, 0, 0.87),
+        300: white,
+        400: white,
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white
+    )
+);
+
+$gendac-proficiency-assessment-tertiary-pallette: (
+    // create hues of the tertiary color #82AEB1
+    50: #E0F1F9,
+    100: #B3D9F0,
+    200: #80C0E7,
+    300: #4DA7DE,
+    400: #2694D8,
+    500: #82AEB1,
+    600: #004F91,
+    700: #00437A,
+    800: #003663,
+    900: #00294C,
+    // create contrasts of the tertiary color
+    contrast: (
+        50: rgba(black, 0.87),
+        100: rgba(black, 0.87),
+        200: rgba(black, 0.87),
+        300: white,
+        400: white,
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white
+    )
+);
+
+$gendac-proficiency-assessment-warn-pallette: (
+    // create hues of the warn color #EF4646
+    50: #FDE9E9,
+    100: #FACCCC,
+    200: #F6AFAF,
+    300: #F29797,
+    400: #F08585,
+    500: #EF4646,
+    600: #C5242B,
+    700: #B12027,
+    800: #9D1C23,
+    900: #89181F,
+    // create contrasts of the warn color
+    contrast: (
+        50: rgba(0, 0, 0, 0.87),
+        100: rgba(0, 0, 0, 0.87),
+        200: rgba(0, 0, 0, 0.87),
+        300: white,
+        400: white,
+        500: white,
+        600: white,
+        700: white,
+        800: white,
+        900: white
+    )
 );
