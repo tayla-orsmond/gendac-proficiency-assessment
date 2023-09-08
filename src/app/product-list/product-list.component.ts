@@ -27,7 +27,7 @@ import { MatTable } from '@angular/material/table';
 })
 export class ProductListComponent {
   //make sure products are displayed as a list, and handle sort and filter accordingly (also select all) and have a filter bar
-  products: Product[] = [] as Product[];
+  products: Product[] = [];
   dataSource!: ProductListDataSource;
   displayedColumns: string[] = [
     'select',
@@ -37,6 +37,8 @@ export class ProductListComponent {
     'category',
     'edit',
   ];
+  categories: string[] = ['ID', 'Name', 'Price', 'Category', 'none']; // Filter by category
+  selectedCategory: string = 'None';
 
   selection = new SelectionModel<Product>(true, []);
 
@@ -50,7 +52,6 @@ export class ProductListComponent {
   ngOnInit(): void {
     this.dataSource = new ProductListDataSource(this.productService);
     // this.dataSource.loadProducts();
-    //this.dataSource.loadLessons(this.course.id, '', 'asc', 0, 3);
     // this.productService.productChangeEvent$.subscribe((products) => {
     //   this.dataSource.loadProducts();
     //   console.log('product-list.component.ts: productChangeEvent$ subscription, products:', products);
@@ -58,18 +59,15 @@ export class ProductListComponent {
   }
 
   ngAfterViewInit() {
-    // set data source paginator and sort
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+    this.products = this.dataSource.getSubjectValue();
     this.table.dataSource = this.dataSource;
-    
     fromEvent(this.filter.nativeElement, 'keyup')
       .pipe(
         debounceTime(150),
         distinctUntilChanged(),
         tap(() => {
           this.paginator.pageIndex = 0;
-          this.loadProductsPage();
+          this.loadProductsPage(this.filter.nativeElement.value, true, 0, 10, this.sort.active, this.selectedCategory);
         })
       )
       .subscribe();
@@ -81,20 +79,28 @@ export class ProductListComponent {
     merge(this.sort.sortChange, this.paginator.page)
       .pipe()
       .subscribe(() => {
-        this.loadProductsPage();
+        this.loadProductsPage(
+          '',
+          this.sort.direction === 'asc',
+          this.paginator.pageIndex,
+          this.paginator.pageSize,
+          this.sort.active,
+          'none'
+        );
       });
   }
 
-  loadProductsPage() {
+  loadProductsPage(
+    filter: string = '',
+    ascending: boolean = true,
+    page: number = 0,
+    pageSize: number = 10,
+    orderBy: string = 'id',
+    filterBy: string = 'none'
+  ) {
     console.log('[List]: loading products page because of sort or page event');
-    this.dataSource.loadProducts();
-    /*  this.dataSource.loadLessons(
-            this.course.id,
-            this.input.nativeElement.value,
-            this.sort.direction,
-            this.paginator.pageIndex,
-            this.paginator.pageSize);
-    */
+    this.dataSource.loadProducts(filter, ascending, page, pageSize, orderBy, filterBy);
+    this.products = this.dataSource.getSubjectValue();
   }
 
   toggleProductSelect(product: Product) {
@@ -105,7 +111,7 @@ export class ProductListComponent {
     if (this.allProductsSelected()) {
       this.selection.clear();
     } else {
-      this.selection.select(...this.products);
+      this.selection.select(...this.dataSource.getSubjectValue());
     }
   }
 
@@ -129,8 +135,22 @@ export class ProductListComponent {
       return;
     }
 
-    this.dataSource.deleteProduct(this.selection.selected.map((product) => product.id));
+    this.dataSource.deleteProduct(
+      this.selection.selected.map((product) => product.Id)
+    );
     this.selection.clear();
-    this.loadProductsPage();
+    this.loadProductsPage(
+      '',
+      this.sort.direction === 'asc',
+      this.paginator.pageIndex,
+      this.paginator.pageSize,
+      this.sort.active,
+      this.selectedCategory
+    );
+  }
+
+  wipeFilter() {
+    console.log('[List]: wiping filter' + this.filter.nativeElement.value);
+    this.filter.nativeElement.value = '';
   }
 }

@@ -11,59 +11,86 @@ export class ProductListDataSource extends DataSource<Product> {
   sort!: MatSort;
   private productSubject = new BehaviorSubject<Product[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
-  private productListLengthSubject = new BehaviorSubject<number>(0);
 
   public product$ = this.productSubject.asObservable();
   public loading$ = this.loadingSubject.asObservable();
-  public length$ = this.productListLengthSubject.asObservable();
 
   constructor(private productService: ProductService) {
     super();
-    this.productService.productChangeEvent$.subscribe((products) => {
+    this.productService.productChangeEvent$.subscribe((product) => {
       this.loadProducts();
-      console.log("product-list-datasource.ts: productChangeEvent$ subscription, products:", products);
+      console.log(
+        'product-list-datasource.ts: productChangeEvent$ subscription, product:',
+        product
+      );
     });
   }
 
-  connect(collectionViewer: CollectionViewer): Observable<Product[]> {
+  connect(_collectionViewer: CollectionViewer): Observable<Product[]> {
     return this.productSubject.asObservable();
   }
 
-  disconnect(): void {
+  disconnect(_collectionViewer: CollectionViewer): void {
     this.productSubject.complete();
     this.loadingSubject.complete();
-    this.productListLengthSubject.complete();
   }
 
-  public loadProducts(): void {
-    // TODO: Use API to get products
+  public loadProducts(
+    filter: string = '',
+    ascending: boolean = true,
+    page: number = 0,
+    pageSize: number = 10,
+    orderBy: string = 'id',
+    filterBy: string = 'none'
+  ): void {
+    this.loadingSubject.next(true);
+
     this.productService
-      .getProducts()
+      .getProducts(filter, ascending, page, pageSize, orderBy)
       .pipe(
         catchError(() => observableOf([])),
         finalize(() => {
           this.loadingSubject.next(false);
           this.productSubject.next(this.productSubject.value);
-          this.productListLengthSubject.next(this.productSubject.value.length);
         })
       )
       .subscribe((products: Product[]) => {
-        console.log("product-list-datasource.ts: loadProducts() subscription, products:", products);
+        console.log(
+          'product-list-datasource.ts: loadProducts() subscription, products:',
+          products
+        );
+        // if filterBy is not none, return only the products whose attribute dictated by filterBy contains filter
+        products = products.filter((product) => {
+          if (filterBy === 'Id') {
+            return product.Id === parseInt(filter);
+          } else if (filterBy === 'Name') {
+            return product.Name.toLowerCase().includes(filter.toLowerCase());
+          } else if (filterBy === 'Category') {
+            return product.Category === parseInt(filter);
+          } else if (filterBy === 'Price') {
+            return product.Price.toString().includes(filter);
+          } else {
+            return true;
+          }
+        });
         this.productSubject.next(products);
-        this.productListLengthSubject.next(products.length);
       });
   }
 
-  editProduct(product : Product) {
-    console.log("editProduct in product-list-datasource.ts, passing value", product, "to productService.editProduct()");
+  editProduct(product: Product) {
+    console.log(
+      'editProduct in product-list-datasource.ts, passing value',
+      product,
+      'to productService.editProduct()'
+    );
     this.productService.editProduct(product);
   }
 
-  deleteProduct(products : number[]) : void {
-    this.productService
-      .deleteProduct(products)
-      .subscribe(() => {
-        this.loadProducts();
-      });
+  deleteProduct(products: number[]): void {
+    this.productService.deleteProduct(products);
+  }
+
+  getSubjectValue(): Product[] {
+    return this.productSubject.value;
   }
 }

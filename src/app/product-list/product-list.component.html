@@ -12,6 +12,15 @@
                 <input matInput placeholder="Filter" #filter id="filter">
                 <mat-icon matSuffix fontIcon="filter_list"></mat-icon>
             </mat-form-field>
+            <!-- Filter Options -->
+            <mat-form-field>
+                <mat-label>Filter By: {{selectedCategory}} </mat-label>
+                <mat-select [(value)]="selectedCategory" (selectionChange)="wipeFilter()">
+                    <mat-option *ngFor="let category of categories" [value]="category">
+                        {{category}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
         </div>
     </div>
 
@@ -19,7 +28,7 @@
         <mat-spinner></mat-spinner>
     </div>
 
-    <mat-table #table matSort matSortActive="id" matSortDirection="asc" aria-label="products">
+    <mat-table [hidden]="!(dataSource.loading$ | async)" #table matSort matSortActive="id" matSortDirection="asc" aria-label="products">
         <ng-container matColumnDef="select">
             <mat-header-cell *matHeaderCellDef>
                 <mat-checkbox color="primary" (change)="$event ? toggleAllProducts() : null"
@@ -37,22 +46,22 @@
 
         <ng-container matColumnDef="id">
             <mat-header-cell mat-sort-header *matHeaderCellDef> ID </mat-header-cell>
-            <mat-cell *matCellDef="let product"> {{product.id}} </mat-cell>
+            <mat-cell *matCellDef="let product"> {{product.Id}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="name">
             <mat-header-cell mat-sort-header *matHeaderCellDef> Name </mat-header-cell>
-            <mat-cell *matCellDef="let product"> {{product.name.split(' ')[1]}}</mat-cell>
+            <mat-cell *matCellDef="let product"> {{product.Name.split(' ')[1]}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="price">
             <mat-header-cell mat-sort-header *matHeaderCellDef> Price </mat-header-cell>
-            <mat-cell *matCellDef="let product"> {{product.price}} </mat-cell>
+            <mat-cell *matCellDef="let product"> {{product.Price}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="category">
             <mat-header-cell mat-sort-header *matHeaderCellDef> Category </mat-header-cell>
-            <mat-cell *matCellDef="let product"> {{product.category}} </mat-cell>
+            <mat-cell *matCellDef="let product"> {{product.Category}} </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="edit">
@@ -68,6 +77,6 @@
         <mat-row *matRowDef="let product; columns: displayedColumns;"></mat-row>
     </mat-table>
 
-    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons="true" [length]="dataSource.length$ | async"
+    <mat-paginator [hidden]="!(dataSource.loading$ | async)" [pageSizeOptions]="[5, 10, 25, 100, 1000]" showFirstLastButtons="true" [length]="10001"
         [pageSize]="10" aria-label="Select page of products"></mat-paginator>
 </div>
