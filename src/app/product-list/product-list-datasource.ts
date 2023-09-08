@@ -17,13 +17,6 @@ export class ProductListDataSource extends DataSource<Product> {
 
   constructor(private productService: ProductService) {
     super();
-    this.productService.productChangeEvent$.subscribe((product) => {
-      this.loadProducts();
-      console.log(
-        'product-list-datasource.ts: productChangeEvent$ subscription, product:',
-        product
-      );
-    });
   }
 
   connect(_collectionViewer: CollectionViewer): Observable<Product[]> {
@@ -77,17 +70,17 @@ export class ProductListDataSource extends DataSource<Product> {
       });
   }
 
-  editProduct(product: Product) {
+  editProduct(product: Product) : void{
     console.log(
       'editProduct in product-list-datasource.ts, passing value',
       product,
       'to productService.editProduct()'
     );
-    this.productService.editProduct(product);
+     this.productService.editProduct(product);
   }
 
-  deleteProduct(products: number[]): void {
-    this.productService.deleteProduct(products);
+  deleteProduct(products: number[]): Observable<Product[]> {
+    return this.productService.deleteProduct(products);
   }
 
   getSubjectValue(): Product[] {

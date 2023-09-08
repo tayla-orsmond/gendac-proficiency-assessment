@@ -51,7 +51,7 @@ export class ProductListComponent {
 
   ngOnInit(): void {
     this.dataSource = new ProductListDataSource(this.productService);
-    // this.dataSource.loadProducts();
+    this.dataSource.loadProducts();
     // this.productService.productChangeEvent$.subscribe((products) => {
     //   this.dataSource.loadProducts();
     //   console.log('product-list.component.ts: productChangeEvent$ subscription, products:', products);
@@ -61,6 +61,18 @@ export class ProductListComponent {
   ngAfterViewInit() {
     this.products = this.dataSource.getSubjectValue();
     this.table.dataSource = this.dataSource;
+
+    this.productService.productChangeEvent$.subscribe((product) => {
+      this.loadProductsPage(
+        '',
+        this.sort.direction === 'asc',
+        this.paginator.pageIndex,
+        this.paginator.pageSize,
+        this.sort.active,
+        'none'
+      );
+    });
+
     fromEvent(this.filter.nativeElement, 'keyup')
       .pipe(
         debounceTime(150),
@@ -137,16 +149,20 @@ export class ProductListComponent {
 
     this.dataSource.deleteProduct(
       this.selection.selected.map((product) => product.Id)
-    );
+    ).subscribe(() => {
+      setTimeout(() => {
+        // reload the exact same page
+        this.loadProductsPage(
+          this.filter.nativeElement.value,
+          this.sort.direction === 'asc',
+          this.paginator.pageIndex,
+          this.paginator.pageSize,
+          this.sort.active,
+          this.selectedCategory
+        );
+      }, 1000);
+    });
     this.selection.clear();
-    this.loadProductsPage(
-      '',
-      this.sort.direction === 'asc',
-      this.paginator.pageIndex,
-      this.paginator.pageSize,
-      this.sort.active,
-      this.selectedCategory
-    );
   }
 
   wipeFilter() {
