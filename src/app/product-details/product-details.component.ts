@@ -38,7 +38,7 @@ export class ProductDetailsComponent {
 
   // Lifecycle Hooks
   ngOnInit(): void {
-    this.productService.editProductEventListener().subscribe((product) => {
+    this.productService.productEditEvent$.subscribe((product) => {
       this.activeEditProduct = product;
       this.populateForm();
     });

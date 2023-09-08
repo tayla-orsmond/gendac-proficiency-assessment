@@ -1,0 +1,71 @@
+/* Table Styles */
+@use 'src/styles/variables.scss' as *;
+@use 'src/styles/mixins.scss' as *;
+
+// Override Material Design table styles
+mat-header-cell,
+.mat-mdc-header-cell {
+    @include text-large;
+    background-color: map-get($map: $theme-colors, $key: 'dark') !important;
+    color: map-get($map: $theme-colors, $key: 'white') !important;
+}
+
+.mat-mdc-cell {
+    @include text-main;
+    background-color: map-get($map: $theme-colors, $key: 'white') !important;
+    color: map-get($map: $theme-colors, $key: 'black') !important;
+}
+
+.mat-mdc-paginator-page-size-label,
+.mat-mdc-paginator-range-label {
+    @include text-main;
+    color: map-get($map: $theme-colors, $key: 'black') !important;
+}
+
+.mat-sort-header-arrow {
+    color: map-get($map: $theme-colors, $key: 'white') !important;
+}
+
+// Columns
+.mat-column-select{
+    overflow: initial;
+    flex: 0 0 5%;
+    border-right: 1px solid map-get($map: $theme-colors, $key: 'light') !important;
+}
+
+.mat-column-edit {
+    justify-content: right;
+    flex: 0 0 10%;
+    button {
+        @include button-transparent;
+    }
+}
+
+// Override mat-form-field styles
+.mat-mdc-text-field-wrapper {
+    background-color: map-get($map: $theme-colors, $key: 'white') !important;
+    border: 2px solid map-get($map: $theme-colors, $key: 'dark') !important;
+    border-radius: 10px !important;
+}
+// Buttons
+.add-button {
+    @include button-tertiary;
+}
+
+.delete-button {
+    @include button-secondary;
+}
+
+// Other styles
+.actions,
+.actions div {
+    height: fit-content;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2,
+    button {
+        margin: 0 1rem;
+    }
+}
