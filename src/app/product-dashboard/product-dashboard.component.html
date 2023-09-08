@@ -1,6 +1,7 @@
-<h1>Welcome!</h1>
-<button (click)="addProduct()">Add Product</button>
-<button [hidden]="selectedProducts.length === 0" (click)="deleteProduct(selectedProducts)">Delete
-    {{selectedProducts.length >= 2 ? "Products" : "Product"}}</button>
-<app-product-details></app-product-details>
-<app-product-list [products]="products" (selectedProducts)="selectProduct($event)"></app-product-list>
+<header>
+    <img src="/assets/gendacLogo.png" alt="Gendac Logo" />
+</header>
+<main>
+    <app-product-details></app-product-details>
+    <app-product-list></app-product-list>
+</main>

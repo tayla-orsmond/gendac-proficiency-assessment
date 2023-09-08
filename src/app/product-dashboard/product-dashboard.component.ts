@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { ProductService } from '../product.service';
-import { Product } from '../product';
 
 @Component({
   selector: 'app-product-dashboard',
@@ -9,42 +8,5 @@ import { Product } from '../product';
   providers: [ProductService],
 })
 export class ProductDashboardComponent { // a dashboard component that displays the product list, product details, and product add/edit form
-  products: Product[] = [];
-  selectedProducts: number[] = [];
-
-  constructor(private productService: ProductService) { }
-
-  ngOnInit(): void {
-    this.getProductList();
-  }
-
-  getProductList(): void {
-    this.productService.getProducts()
-      .subscribe(products => this.products = products);
-  }
-
-  addProduct(): void {
-    this.productService.editProduct({} as Product);
-  }
-
-  selectProduct(pID: number): void {
-    if(this.selectedProducts.includes(pID)) {
-      this.selectedProducts.splice(this.selectedProducts.indexOf(pID), 1);
-    } else {
-      this.selectedProducts.push(pID);
-    }
-  }
-
-  deleteProduct(products: number[]): void {
-    // Confirm deletion
-    if(!confirm("Are you sure you want to delete the selected products?")) {
-      return;
-    }
-    
-    this.productService.deleteProduct(products)
-      .subscribe(() => {
-        this.getProductList();
-        this.selectedProducts = [];
-      });
-  }
+  constructor() { }
 }

@@ -1,5 +1,73 @@
 <div>
-    <h2>Products:</h2>
-    <app-product *ngFor="let product of products" [product]="product"
-        (toggleSelect)="selectProduct($event)"></app-product>
+    <div class="actions">
+        <div>
+            <h2>All Products: </h2>
+            <button class="add-button" (click)="addProduct()">Add Product</button>
+        </div>
+        <div>
+            <button class="delete-button" [hidden]="selection.selected.length === 0" (click)="deleteProduct()">Delete
+                {{selection.selected.length >= 2 ? "Products" : "Product"}}</button>
+            <mat-form-field>
+                <mat-label for="filter">Filter:</mat-label>
+                <input matInput placeholder="Filter" #filter id="filter">
+                <mat-icon matSuffix fontIcon="filter_list"></mat-icon>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+        <mat-spinner></mat-spinner>
+    </div>
+
+    <mat-table #table matSort matSortActive="id" matSortDirection="asc" [dataSource]="dataSource" aria-label="products">
+        <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef>
+                <mat-checkbox color="primary" (change)="$event ? toggleAllProducts() : null"
+                    [checked]="selection.hasValue() && allProductsSelected()"
+                    [indeterminate]="selection.hasValue() && allProductsSelected()">
+                </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let product">
+                <mat-checkbox color="primary"
+                    (click)="selection.toggle(product); toggleProductSelect(product); $event.stopPropagation();"
+                    (change)="$event ? selection.toggle(product) : null" [checked]="selection.isSelected(product)">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="id">
+            <mat-header-cell mat-sort-header *matHeaderCellDef> ID </mat-header-cell>
+            <mat-cell *matCellDef="let product"> {{product.id}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <mat-header-cell mat-sort-header *matHeaderCellDef> Name </mat-header-cell>
+            <mat-cell *matCellDef="let product"> {{product.name.split(' ')[1]}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+            <mat-header-cell mat-sort-header *matHeaderCellDef> Price </mat-header-cell>
+            <mat-cell *matCellDef="let product"> {{product.price}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="category">
+            <mat-header-cell mat-sort-header *matHeaderCellDef> Category </mat-header-cell>
+            <mat-cell *matCellDef="let product"> {{product.category}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="edit">
+            <mat-header-cell *matHeaderCellDef> Edit </mat-header-cell>
+            <mat-cell *matCellDef="let product">
+                <button aria-label="editProduct" (click)="editProduct(product)">
+                    <mat-icon class="material-symbols-rounded" fontIcon="edit_square"></mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let product; columns: displayedColumns;"></mat-row>
+    </mat-table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons="true" [length]="products.length"
+        [pageSize]="10" aria-label="Select page of products"></mat-paginator>
 </div>

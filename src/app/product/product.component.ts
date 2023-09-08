@@ -5,7 +5,7 @@ import { ProductService } from '../product.service';
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
-  styleUrls: ['./product.component.scss']
+  styleUrls: ['./product.component.scss'],
 })
 export class ProductComponent { // display product details and emit events when user interacts with the component
   @Input() product = {} as Product;
