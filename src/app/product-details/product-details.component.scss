@@ -1,0 +1,41 @@
+/* Product Details Form & Modal Styles */
+@use '/src/styles/variables.scss' as *;
+@use '/src/styles/mixins.scss' as *;
+
+.product-details,
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    padding: 0 1rem;
+    margin: 0 auto;
+}
+
+h2,
+.mat-mdc-dialog-title {
+    color: map-get($map: $theme-colors, $key: 'tertiary') !important;
+}
+
+.mat-mdc-dialog-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+// mat-error overrides
+.mat-mdc-form-field-error,
+.mat-mdc-form-field-subscript-wrapper {
+   @include text-small;
+}
+
+.cancel {
+    @include button-secondary;
+}
+
+button[type="submit"] {
+    @include button-primary;
+}
+
+.label-lg {
+    @include text-large;
+}

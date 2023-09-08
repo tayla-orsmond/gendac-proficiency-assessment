@@ -1,4 +1,4 @@
-<div [hidden]="!formVisible" *ngIf="activeEditProduct">
+<!-- <div [hidden]="!formVisible" *ngIf="activeEditProduct">
     <h2>{{isEdit ? "Edit" : "Add"}} Product:</h2>
     <form [formGroup]="productForm" (submit)="submit()">
         <label for="name">Product:</label>
@@ -18,8 +18,50 @@
             <option value="3">3</option>
         </select>
         <span *ngIf="productForm.controls.Category.errors?.['required']">Category is required</span>
-        <!-- disable button if form is invalid or unchanged -->
         <button type="submit" [disabled]="!productForm.valid || productForm.pristine">{{isEdit ? "Update" : "Create"}} Product</button>
         <button (click)="cancel()">Cancel</button>
     </form>
+</div> -->
+
+<!-- Material Equivalent: -->
+<div [hidden]="!formVisible" *ngIf="activeEditProduct" class="product-details">
+    <h2><mat-icon fontIcon="style"></mat-icon> {{isEdit ? "Edit" : "Add"}} Product:</h2>
+    <form [formGroup]="productForm" (submit)="submit()">
+        <p class="label-lg">Product:</p>
+        <mat-form-field>
+            <mat-label for="name">Product</mat-label>
+            <input matInput type="text" id="name" formControlName="Name" value={{productForm.value.Name}}
+                placeholder="AAA00000" required />
+            <mat-error *ngIf="productForm.controls.Name.errors?.['required']">Name is required</mat-error>
+            <mat-error *ngIf="productForm.controls.Name.errors?.['pattern']">Name should take the form: ABC12345 (3
+                letters, 5 numbers)</mat-error>
+        </mat-form-field>
+        <p class="label-lg">Price:</p>
+        <mat-form-field>
+            <mat-label for="price">Price</mat-label>
+            <input matInput type="number" id="price" formControlName="Price" value={{productForm.value.Price}}
+                placeholder="0.00" min="0.00" step="0.01" required />
+            <mat-error *ngIf="productForm.controls.Price.errors?.['required']">Price is required</mat-error>
+            <mat-error *ngIf="productForm.controls.Price.errors?.['min']">Price must be greater than 0</mat-error>
+        </mat-form-field>
+        <p class="label-lg">Category:</p>
+        <mat-form-field>
+            <mat-label for="category">Category</mat-label>
+            <mat-select id="category" formControlName="Category" value={{productForm.value.Category}} required>
+                <mat-option value="1" selected>1</mat-option>
+                <mat-option value="2">2</mat-option>
+                <mat-option value="3">3</mat-option>
+            </mat-select>
+            <mat-error *ngIf="productForm.controls.Category.errors?.['required']">Category is required</mat-error>
+        </mat-form-field>
+        <div>
+            <button class="cancel" (click)="cancel()">Cancel</button>
+            <!-- disable button if form is invalid or unchanged -->
+            <button color="primary" type="submit"
+                [disabled]="!productForm.valid || productForm.pristine">{{isEdit ? "Update" : "Create"}}
+                Product</button>
+        </div>
+    </form>
 </div>
+
+<!-- Material with Dialog -->

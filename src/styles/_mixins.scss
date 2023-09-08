@@ -61,6 +61,11 @@
     &:hover {
         background-color: darken(map-get($map: $theme-colors, $key: 'primary'), 10%) !important;
     }
+
+    &:disabled {
+        background-color: lighten(map-get($map: $theme-colors, $key: 'light'), 10%) !important;
+        cursor: not-allowed !important;
+    }
 }
 
 @mixin button-secondary {
@@ -75,6 +80,11 @@
 
     &:hover {
         background-color: darken(map-get($map: $theme-colors, $key: 'secondary'), 10%) !important;
+    }
+
+    &:disabled {
+        background-color: lighten(map-get($map: $theme-colors, $key: 'light'), 10%) !important;
+        cursor: not-allowed !important;
     }
 }
 
@@ -91,6 +101,11 @@
     &:hover {
         background-color: darken(map-get($map: $theme-colors, $key: 'tertiary'), 10%) !important;
     }
+
+    &:disabled {
+        background-color: lighten(map-get($map: $theme-colors, $key: 'light'), 10%) !important;
+        cursor: not-allowed !important;
+    }
 }
 
 @mixin button-transparent {
@@ -105,5 +120,10 @@
 
     &:hover {
         color: rgba(map-get($map: $theme-colors, $key: 'tertiary'), 0.9) !important;
+    }
+
+    &:disabled {
+        color: rgba(map-get($map: $theme-colors, $key: 'light'), 0.5) !important;
+        cursor: not-allowed !important;
     }
 }

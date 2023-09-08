@@ -46,7 +46,7 @@ mat-header-cell,
 .mat-mdc-select-wrapper {
     background-color: map-get($map: $theme-colors, $key: 'white') !important;
     border: 2px solid map-get($map: $theme-colors, $key: 'dark') !important;
-    border-radius: 10px !important;
+    border-radius: 5px !important;
     padding: 0 0.5rem !important;
     height: fit-content !important;
 }
