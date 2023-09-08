@@ -27,7 +27,6 @@ import { MatTable } from '@angular/material/table';
 })
 export class ProductListComponent {
   //make sure products are displayed as a list, and handle sort and filter accordingly (also select all) and have a filter bar
-  products: Product[] = [];
   dataSource!: ProductListDataSource;
   displayedColumns: string[] = [
     'select',
@@ -37,7 +36,7 @@ export class ProductListComponent {
     'category',
     'edit',
   ];
-  categories: string[] = ['ID', 'Name', 'Price', 'Category', 'none']; // Filter by category
+  categories: string[] = ['Id', 'Name', 'Price', 'Category', 'none']; // Filter by category
   selectedCategory: string = 'None';
 
   selection = new SelectionModel<Product>(true, []);
@@ -52,16 +51,9 @@ export class ProductListComponent {
   ngOnInit(): void {
     this.dataSource = new ProductListDataSource(this.productService);
     this.dataSource.loadProducts();
-    // this.productService.productChangeEvent$.subscribe((products) => {
-    //   this.dataSource.loadProducts();
-    //   console.log('product-list.component.ts: productChangeEvent$ subscription, products:', products);
-    // });
   }
 
   ngAfterViewInit() {
-    this.products = this.dataSource.getSubjectValue();
-    this.table.dataSource = this.dataSource;
-
     this.productService.productChangeEvent$.subscribe((product) => {
       this.loadProductsPage(
         '',
@@ -71,6 +63,7 @@ export class ProductListComponent {
         this.sort.active,
         'none'
       );
+      this.table.dataSource = this.dataSource;
     });
 
     fromEvent(this.filter.nativeElement, 'keyup')
@@ -112,7 +105,6 @@ export class ProductListComponent {
   ) {
     console.log('[List]: loading products page because of sort or page event');
     this.dataSource.loadProducts(filter, ascending, page, pageSize, orderBy, filterBy);
-    this.products = this.dataSource.getSubjectValue();
   }
 
   toggleProductSelect(product: Product) {
@@ -128,7 +120,7 @@ export class ProductListComponent {
   }
 
   allProductsSelected() {
-    return this.selection.selected.length === this.products.length;
+    return this.selection.selected.length === this.dataSource.getSubjectValue().length;
   }
 
   editProduct(product: Product) {
