@@ -1,10 +1,13 @@
 <div>
-    <input type="checkbox" (change)="toggleProductSelect()" [checked]="false">
+    <!-- <input type="checkbox" (change)="toggleProductSelect()" [checked]="false"> -->
+    <mat-checkbox (change)="toggleProductSelect()" [checked]="false"></mat-checkbox>
     <p>{{product.id}}</p>
     <p>{{product.name.split(' ')[1]}}</p>
     <p>{{product.price}}</p>
     <p>{{product.category}}</p>
     <span class="actions">
-        <button (click)="editProduct()">Edit</button>
+        <button (click)="editProduct()" aria-label="editProduct">
+            <mat-icon class="material-symbols-rounded" fontIcon="edit_square"></mat-icon>
+        </button>
     </span>
 </div>

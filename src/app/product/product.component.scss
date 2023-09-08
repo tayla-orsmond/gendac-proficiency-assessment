@@ -1,6 +1,7 @@
 /* Product Component */
+@use 'src/styles/variables.scss' as *;
+
 div {
-    width: 100%;
     border: solid 1px #ccc;
     border-radius: 2px;
     padding: 10px 20px;
@@ -11,5 +12,13 @@ div {
         display: flex;
         width: 100px;
         justify-content: space-between;
+    }
+
+    .material-symbols-rounded {
+        font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 200,
+            'opsz' 48
     }
 }
