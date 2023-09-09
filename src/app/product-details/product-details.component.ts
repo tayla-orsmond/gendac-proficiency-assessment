@@ -61,9 +61,9 @@ export class ProductDetailsComponent {
   submit(): void {
     if (this.data && this.productForm.valid && this.productForm.dirty) {
       const product: Product = {
-        Id: this.data.Id ?? 0,
-        Name: 'Product ' + (this.productForm.value.Name?.toUpperCase() ?? ''),
-        Category: (this.productForm.value.Category as number) ?? 0,
+        Id: this.data.Id as number ?? 0,
+        Name: 'Product ' + (this.productForm.value.Name?.toUpperCase() as string ?? ''),
+        Category: (this.productForm.value.Category as number) ?? 1,
         Price: (this.productForm.value.Price as number) ?? 0.0,
       };
       if (this.isEdit) {

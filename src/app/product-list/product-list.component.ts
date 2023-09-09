@@ -31,6 +31,7 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 })
 export class ProductListComponent {
   //make sure products are displayed as a list, and handle sort and filter accordingly (also select all) and have a filter bar
+  subscription: any;
   dataSource!: ProductListDataSource;
   displayedColumns: string[] = [
     'select',
@@ -61,21 +62,32 @@ export class ProductListComponent {
     this.dataSource.loadProducts();
   }
 
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+
   ngAfterViewInit() {
-    this.productService.productChangeEvent$.subscribe((product) => {
-      // reload the exact same page
-      this.loadProductsPage(
-        '',
-        this.sort.direction === 'asc',
-        this.paginator.pageIndex + 1,
-        this.paginator.pageSize,
-        this.sort.active,
-        'none'
-      );
-      this.table.dataSource = this.dataSource;
-      this.cd.detectChanges();
-      console.log('[List]: productChangeEvent subscription, product:', product);
-    });
+    this.subscription = this.productService.productChangeEvent$.subscribe(
+      (product) => {
+        // reload the exact same page
+        this.loadProductsPage(
+          '',
+          this.sort.direction === 'asc',
+          this.paginator.pageIndex + 1,
+          this.paginator.pageSize,
+          this.sort.active,
+          'none'
+        );
+        // this.cd.detectChanges();
+        this.table.dataSource = this.dataSource;
+        console.log(
+          '[List]: productChangeEvent subscription, product:',
+          product
+        );
+      }
+    );
 
     fromEvent(this.filter.nativeElement, 'keyup')
       .pipe(
