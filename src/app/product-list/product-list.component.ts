@@ -18,6 +18,8 @@ import {
   tap,
 } from 'rxjs';
 import { MatTable } from '@angular/material/table';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ProductDetailsComponent } from '../product-details/product-details.component';
 
 @Component({
   selector: 'app-product-list',
@@ -46,7 +48,10 @@ export class ProductListComponent {
   @ViewChild('filter') filter!: ElementRef;
   @ViewChild(MatTable) table!: MatTable<Product>;
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.dataSource = new ProductListDataSource(this.productService);
@@ -55,6 +60,7 @@ export class ProductListComponent {
 
   ngAfterViewInit() {
     this.productService.productChangeEvent$.subscribe((product) => {
+      // reload the exact same page
       this.loadProductsPage(
         '',
         this.sort.direction === 'asc',
@@ -72,7 +78,14 @@ export class ProductListComponent {
         distinctUntilChanged(),
         tap(() => {
           this.paginator.pageIndex = 0;
-          this.loadProductsPage(this.filter.nativeElement.value, true, 0, 10, this.sort.active, this.selectedCategory);
+          this.loadProductsPage(
+            this.filter.nativeElement.value,
+            true,
+            0,
+            10,
+            this.sort.active,
+            this.selectedCategory
+          );
         })
       )
       .subscribe();
@@ -104,7 +117,14 @@ export class ProductListComponent {
     filterBy: string = 'none'
   ) {
     console.log('[List]: loading products page because of sort or page event');
-    this.dataSource.loadProducts(filter, ascending, page, pageSize, orderBy, filterBy);
+    this.dataSource.loadProducts(
+      filter,
+      ascending,
+      page,
+      pageSize,
+      orderBy,
+      filterBy
+    );
   }
 
   toggleProductSelect(product: Product) {
@@ -120,17 +140,29 @@ export class ProductListComponent {
   }
 
   allProductsSelected() {
-    return this.selection.selected.length === this.dataSource.getSubjectValue().length;
+    return (
+      this.selection.selected.length ===
+      this.dataSource.getSubjectValue().length
+    );
   }
 
   editProduct(product: Product) {
     console.log('[List]: editing product', product);
-    // use service to edit product
-    this.dataSource.editProduct(product);
+    this.openDialog(product);
   }
 
   addProduct(): void {
-    this.dataSource.editProduct({} as Product);
+    console.log('[List]: adding product');
+    this.openDialog({} as Product);
+  }
+
+  openDialog(product: Product) {
+    this.dialog.open(ProductDetailsComponent, {
+      data: product,
+      width: '50%',
+      enterAnimationDuration: 300,
+      exitAnimationDuration: 200,
+    });
   }
 
   deleteProduct(): void {
@@ -139,21 +171,21 @@ export class ProductListComponent {
       return;
     }
 
-    this.dataSource.deleteProduct(
-      this.selection.selected.map((product) => product.Id)
-    ).subscribe(() => {
-      setTimeout(() => {
-        // reload the exact same page
-        this.loadProductsPage(
-          this.filter.nativeElement.value,
-          this.sort.direction === 'asc',
-          this.paginator.pageIndex,
-          this.paginator.pageSize,
-          this.sort.active,
-          this.selectedCategory
-        );
-      }, 1000);
-    });
+    this.dataSource
+      .deleteProduct(this.selection.selected.map((product) => product.Id))
+      .subscribe(() => {
+        setTimeout(() => {
+          // reload the exact same page
+          this.loadProductsPage(
+            this.filter.nativeElement.value,
+            this.sort.direction === 'asc',
+            this.paginator.pageIndex,
+            this.paginator.pageSize,
+            this.sort.active,
+            this.selectedCategory
+          );
+        }, 1000);
+      });
     this.selection.clear();
   }
 

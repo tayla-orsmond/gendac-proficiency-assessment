@@ -11,9 +11,6 @@ import { Product } from './product';
 export class ProductService {
   // Editing a product - passing data between product component and product-detail form component
   private productChangeEvent = new BehaviorSubject<Product>({} as Product);
-  private productEditEvent = new BehaviorSubject<Product>({} as Product);
-
-  public productEditEvent$ = this.productEditEvent.asObservable();
   public productChangeEvent$ = this.productChangeEvent.asObservable();
 
   private httpOptions = {
@@ -32,17 +29,7 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
-  editProduct(product: Product): void {
-    console.log(
-      'editProduct in product.service.ts, passing value',
-      product,
-      'updating productEditEvent'
-    );
-    this.productEditEvent.next(product);
-  }
-
   ngOnDestroy(): void {
-    this.productEditEvent.complete();
     this.productChangeEvent.complete();
   }
 

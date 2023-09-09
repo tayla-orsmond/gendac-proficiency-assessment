@@ -70,15 +70,6 @@ export class ProductListDataSource extends DataSource<Product> {
       });
   }
 
-  editProduct(product: Product) : void{
-    console.log(
-      'editProduct in product-list-datasource.ts, passing value',
-      product,
-      'to productService.editProduct()'
-    );
-     this.productService.editProduct(product);
-  }
-
   deleteProduct(products: number[]): Observable<Product[]> {
     return this.productService.deleteProduct(products);
   }

@@ -15,7 +15,7 @@ export class ProductComponent { // display product details and emit events when 
 
   editProduct() {
     // use service to edit product
-    this.productService.editProduct(this.product);
+    // this.productService.editProduct(this.product);
   }
 
   toggleProductSelect() {
