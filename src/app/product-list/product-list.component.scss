@@ -27,7 +27,7 @@ mat-header-cell,
 }
 
 // Table Columns
-.mat-column-select{
+.mat-column-select {
     overflow: initial;
     max-width: fit-content;
     border-right: 1px solid map-get($map: $theme-colors, $key: 'light') !important;
@@ -36,6 +36,7 @@ mat-header-cell,
 .mat-column-edit {
     justify-content: right;
     flex: 0 0 10%;
+
     button {
         @include button-transparent;
     }
@@ -64,7 +65,7 @@ mat-header-cell,
     @include button-secondary;
 }
 
-// Other styles
+// Other Styles
 .list {
     margin-bottom: 20px;
 }
@@ -77,7 +78,7 @@ mat-header-cell,
     align-items: center;
 
     h2,
-    button{
+    button {
         margin: 0 0.5rem;
     }
 

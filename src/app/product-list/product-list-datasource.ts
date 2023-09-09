@@ -3,12 +3,18 @@ import { catchError, finalize } from 'rxjs/operators';
 import { Observable, of as observableOf, BehaviorSubject } from 'rxjs';
 import { Product } from '../product';
 import { ProductService } from '../product.service';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 
+/**
+ * Data source for the ProductList MatTable. This class should encapsulate all logic for fetching the displayed data.
+ * Has a dependency on ProductService. It uses ProductService to fetch the data from the server.
+ * It has two BehaviorSubjects: productSubject and loadingSubject.
+ * productSubject is used to store the products fetched from the server.
+ * loadingSubject is used to store the loading state of the data.
+ * It implements the DataSource interface and its connect() and disconnect() methods.
+ *  connect() method returns an Observable of Product[].
+ *  disconnect() method is used to unsubscribe from the BehaviorSubjects.
+ */
 export class ProductListDataSource extends DataSource<Product> {
-  paginator!: MatPaginator;
-  sort!: MatSort;
   private productSubject = new BehaviorSubject<Product[]>([]);
   private loadingSubject = new BehaviorSubject<boolean>(false);
 
@@ -19,6 +25,7 @@ export class ProductListDataSource extends DataSource<Product> {
     super();
   }
 
+  // DataSource interface methods
   connect(_collectionViewer: CollectionViewer): Observable<Product[]> {
     return this.productSubject.asObservable();
   }
@@ -28,7 +35,20 @@ export class ProductListDataSource extends DataSource<Product> {
     this.loadingSubject.complete();
   }
 
-  public loadProducts(
+  // Custom methods
+  /**
+   * Loads products from the server and stores them in productSubject.
+   *
+   * @param filter - The filter string (defaults to empty string)
+   * @param ascending - Whether to sort ascending or descending (defaults to true)
+   * @param page - The page number (starts at 1)
+   * @param pageSize - The page size (number of items per page)
+   * @param orderBy - The column to order by (defaults to id)
+   * @param filterBy - The category to filter by (defaults to none)
+   *
+   * @returns {void}
+   */
+  loadProducts(
     filter: string = '',
     ascending: boolean = true,
     page: number = 0,
@@ -70,10 +90,20 @@ export class ProductListDataSource extends DataSource<Product> {
       });
   }
 
+  /**
+   * Deletes products from the server
+   * @param products - The product ids to delete (array of numbers)
+   * @returns {Observable<Product[]>} - An Observable of Product[]
+   */
   deleteProduct(products: number[]): Observable<Product[]> {
     return this.productService.deleteProduct(products);
   }
 
+  /**
+   * Returns the value of productSubject (for use with product-list component @see selection methods)
+   * @returns {Product[]} - The value of productSubject
+   * @see productSubject
+   */
   getSubjectValue(): Product[] {
     return this.productSubject.value;
   }

@@ -1,23 +1,22 @@
-/* Service for managing products */
 import { Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  Observable,
-  catchError,
-  map,
-  of,
-} from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
 import { Product } from './product';
+
+/**
+ * This service is used to get, add, update, and delete products.
+ * It handles all http requests to the API.
+ * It has a productChangeEvent$ observable that is used to notify the message service and product-list component when a product is added, or updated.
+ *
+ * This service is injected into the product-list component, product-detail component, and message service.
+ */
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
-  // Editing a product - passing data between product component and product-detail form component
   private productChangeEvent = new BehaviorSubject<string>('');
-  public productChangeEvent$ = this.productChangeEvent.asObservable();
+  public productChangeEvent$ = this.productChangeEvent.asObservable(); // Observable used to notify the message service and product-list component when a product is added, or updated.
 
   private httpOptions = {
     headers: new HttpHeaders({
@@ -36,12 +35,23 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
+  // Lifecycle Hooks
   ngOnDestroy(): void {
     this.productChangeEvent.complete();
   }
 
-  // TODO: Use API to get products
+  // Methods
 
+  /**
+   * Gets products from the API
+   *
+   * @param filter - The filter to be applied to the products (default: '')
+   * @param ascending - Whether or not the products should be sorted in ascending order (default: true)
+   * @param page - The page of products to be fetched (default: 0)
+   * @param pageSize - The number of products to be fetched (default: 10)
+   * @param orderBy - The field to order the products by (default: 'id')
+   * @returns {Observable<Product[]>} - An observable of the products
+   */
   getProducts(
     filter: string = '',
     ascending: boolean = true,
@@ -49,8 +59,6 @@ export class ProductService {
     pageSize: number = 10,
     orderBy: string = 'id'
   ): Observable<Product[]> {
-    // make http request to get products
-    // add extra filter handling for if filterBy is not 'none'
     return this.http
       .get<Product[]>(
         this.productsUrl +
@@ -65,11 +73,16 @@ export class ProductService {
           '&orderBy=' +
           orderBy
       )
-      .pipe(map((res: { [x: string]: any }) => res['Results']));
+      .pipe(map((res: { [x: string]: any }) => res['Results'])); // The API returns an object with a Results property that contains the products
   }
 
+  /**
+   * Posts a product to the API
+   *
+   * @param product - The product to be added
+   * @returns {void}
+   */
   addProduct(product: Product): void {
-    // make http request to add product
     this.http
       .post<Product>(this.productsUrl, product, this.httpOptions)
       .pipe(
@@ -79,17 +92,17 @@ export class ProductService {
         })
       )
       .subscribe((product) => {
-        console.log(
-          'addProduct in product.service.ts, passing value',
-          product,
-          'to PRODUCTS'
-        );
         this.productChangeEvent.next('add');
       });
   }
 
+  /**
+   * Puts a product to the API
+   *
+   * @param product - The product to be updated
+   * @returns {void} (Uses the productChangeEvent$ observable to notify observers when a product is added, or updated)
+   */
   updateProduct(product: Product): void {
-    // make http request to update product
     this.http
       .put<Product>(this.productsUrl + product.Id, product, this.httpOptions)
       .pipe(
@@ -99,33 +112,33 @@ export class ProductService {
         })
       )
       .subscribe((product) => {
-        console.log(
-          'updateProduct in product.service.ts, passing value',
-          product,
-          'to PRODUCTS'
-        );
         this.productChangeEvent.next('update');
       });
   }
 
+  /**
+   * Deletes a product from the API
+   *
+   * @param products - The products to be deleted
+   * @returns {Observable<Product[]>} - An empty observable of products
+   */
   deleteProduct(products: number[]): Observable<Product[]> {
     products.forEach((id) => {
-      // make http request to delete product
       setTimeout(() => {
         this.http
           .delete<Product>(this.productsUrl + id, this.httpOptions)
-          .subscribe((product) => {
-            console.log(
-              'deleteProduct in product.service.ts, passing value',
-              product,
-              'to PRODUCTS'
-            );
-          });
+          .subscribe((product) => {});
       }, 100);
     });
     return of([] as Product[]);
   }
 
+  /**
+   * Gets a product from the API
+   *
+   * @param id - The id of the product to be fetched
+   * @returns {Observable<Product>} - An observable of the product
+   */
   getProduct(id: number): Observable<Product> {
     // make http request to get product
     return this.http.get<Product>(this.productsUrl + id);

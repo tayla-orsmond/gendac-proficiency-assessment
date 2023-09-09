@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   Component,
   ElementRef,
   ViewChild,
@@ -19,10 +18,31 @@ import {
   tap,
 } from 'rxjs';
 import { MatTable } from '@angular/material/table';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ProductDetailsComponent } from '../product-details/product-details.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
+/**
+ * A component that displays a list of products.
+ * The product list component is used to display the list of products, and handles most of the functionality.
+ * The list is displayed as a table, and has a filter bar, sort, pagination, and select all functionality.
+ * Subscribes to the product change event emitted by ProductService, and reloads the list when a product is added or edited.
+ * Has a custom data source that handles the calls to the product service to load the data.
+ * The [length] input of the paginator is hardcoded to 10001 for simplicity, which may cause issues in the future
+ * @constructor {ProductService} productService - The product service, used to get the list of products
+ * @constructor {MatDialog} dialog - The dialog service, used to open the product details dialog
+ *
+ * @property {ProductListDataSource} dataSource - The data source for the table
+ * @property {string[]} displayedColumns - The columns to display in the table
+ * @property {string[]} categories - The categories to filter by
+ * @property {string} selectedCategory - The currently selected category to filter by
+ * @property {SelectionModel<Product>} selection - The selection model for the table
+ * @property {MatPaginator} paginator - The paginator for the table
+ * @property {MatSort} sort - The sort for the table
+ * @property {ElementRef} filter - The filter bar for the table
+ * @property {MatTable} table - The table
+ * @property {Subscription} subscription - The subscription to the product change event (used to unsubscribe on destroy)
+ */
 @Component({
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
@@ -30,7 +50,6 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
   encapsulation: ViewEncapsulation.None,
 })
 export class ProductListComponent {
-  //make sure products are displayed as a list, and handle sort and filter accordingly (also select all) and have a filter bar
   subscription: any;
   dataSource!: ProductListDataSource;
   displayedColumns: string[] = [
@@ -40,8 +59,8 @@ export class ProductListComponent {
     'price',
     'category',
     'edit',
-  ];
-  categories: string[] = ['Id', 'Name', 'Price', 'Category', 'none']; // Filter by category
+  ]; // Table columns
+  categories: string[] = ['Id', 'Name', 'Price', 'Category', 'none']; // Filter by category options
   selectedCategory: string = 'None';
 
   selection = new SelectionModel<Product>(true, []);
@@ -53,10 +72,10 @@ export class ProductListComponent {
 
   constructor(
     private productService: ProductService,
-    private dialog: MatDialog,
-    private cd: ChangeDetectorRef
+    private dialog: MatDialog
   ) {}
 
+  // Lifecycle Hooks
   ngOnInit(): void {
     this.dataSource = new ProductListDataSource(this.productService);
     this.dataSource.loadProducts();
@@ -68,11 +87,12 @@ export class ProductListComponent {
     }
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
+    // Subscribe to product change event (emitted by product service) after view is initialized to make use of the paginator and sort
     this.subscription = this.productService.productChangeEvent$.subscribe(
       (product) => {
-        // reload the exact same page
         this.loadProductsPage(
+          // reload the exact same page
           '',
           this.sort.direction === 'asc',
           this.paginator.pageIndex + 1,
@@ -80,15 +100,11 @@ export class ProductListComponent {
           this.sort.active,
           'none'
         );
-        // this.cd.detectChanges();
         this.table.dataSource = this.dataSource;
-        console.log(
-          '[List]: productChangeEvent subscription, product:',
-          product
-        );
       }
     );
 
+    // Subscribe to filter event
     fromEvent(this.filter.nativeElement, 'keyup')
       .pipe(
         debounceTime(150),
@@ -107,27 +123,13 @@ export class ProductListComponent {
       )
       .subscribe();
 
-    // reset the paginator after sorting
+    // Reset the paginator after sorting
     this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
 
-    // on sort or paginate events, load a new page
+    // On sort or paginate events, load a new page
     merge(this.sort.sortChange, this.paginator.page)
       .pipe()
       .subscribe(() => {
-        console.log(
-          '[List]: sort or page event, page no:' +
-            this.paginator.pageIndex +
-            ' page size:' +
-            this.paginator.pageSize +
-            ' sort active:' +
-            this.sort.active +
-            ' sort direction:' +
-            this.sort.direction +
-            ' filter:' +
-            this.filter.nativeElement.value +
-            ' category:' +
-            this.selectedCategory
-        );
         this.loadProductsPage(
           this.filter.nativeElement.value,
           this.sort.direction === 'asc',
@@ -139,6 +141,21 @@ export class ProductListComponent {
       });
   }
 
+  // Helpers and event handlers
+
+  // Loading Products
+  /**
+   * Loads a page of products from the data source.
+   *
+   * @param filter - The filter string (defaults to empty string)
+   * @param ascending - Whether to sort ascending or descending (defaults to true)
+   * @param page - The page number (starts at 1)
+   * @param pageSize - The page size (number of items per page)
+   * @param orderBy - The column to order by (defaults to id)
+   * @param filterBy - The category to filter by (defaults to none)
+   *
+   * @returns {void}
+   */
   loadProductsPage(
     filter: string = '',
     ascending: boolean = true,
@@ -146,8 +163,7 @@ export class ProductListComponent {
     pageSize: number = 10,
     orderBy: string = 'id',
     filterBy: string = 'none'
-  ) {
-    console.log('[List]: loading products page because of sort or page event');
+  ): void {
     this.dataSource.loadProducts(
       filter,
       ascending,
@@ -158,11 +174,28 @@ export class ProductListComponent {
     );
   }
 
-  toggleProductSelect(product: Product) {
+  // Selecting Products
+
+  /**
+   * Toggles selection for a product.
+   * Uses the selection model to toggle selection for a product.
+   *
+   * @param product - The product to toggle selection for
+   * @returns {void}
+   */
+  toggleProductSelect(product: Product): void {
     this.selection.toggle(product);
   }
 
-  toggleAllProducts() {
+  /**
+   * Toggles selection for all products.
+   * Uses the selection model to toggle selection for all products.
+   * If all products are already selected, clears the selection.
+   * If not all products are selected, selects all products.
+   * Makes use of dataSource.getSubjectValue() to get the current list of products, which returns it's behavior subject's value (async).
+   * @returns {void}
+   */
+  toggleAllProducts(): void {
     if (this.allProductsSelected()) {
       this.selection.clear();
     } else {
@@ -170,6 +203,13 @@ export class ProductListComponent {
     }
   }
 
+  /**
+   * Checks if all products are selected.
+   *
+   * Makes use of dataSource.getSubjectValue() to get the current list of products, which returns it's behavior subject's value (async).
+   * Compares the length of the selection model to the length of the list of products.
+   * @returns {boolean} Whether all products are selected
+   */
   allProductsSelected() {
     return (
       this.selection.selected.length ===
@@ -177,16 +217,34 @@ export class ProductListComponent {
     );
   }
 
-  editProduct(product: Product) {
-    console.log('[List]: editing product', product);
+  // Editing Products
+
+  /**
+   * Opens the product details dialog.
+   * @param product - The product to edit
+   * @returns {void}
+   */
+  editProduct(product: Product): void {
     this.openDialog(product);
   }
 
+  // Adding Products
+
+  /**
+   * Opens the product details dialog.
+   * @param product - The product to add
+   * @returns {void}
+   */
   addProduct(): void {
-    console.log('[List]: adding product');
     this.openDialog({} as Product);
   }
 
+  // Helper
+  /**
+   * Opens the product details dialog.
+   *
+   * @param product - The product to pass to the dialog as data
+   */
   openDialog(product: Product) {
     this.dialog.open(ProductDetailsComponent, {
       data: product,
@@ -196,6 +254,17 @@ export class ProductListComponent {
     });
   }
 
+  // Deleting Products
+
+  /**
+   * Deletes the selected products.
+   *
+   * Opens a confirmation dialog to confirm deletion.
+   * If confirmed, calls the product service to delete the selected products.
+   * After deletion, reloads the list of products.
+   * Sets a timeout of 1 second to avoid overloading the server (due to mass deletion)
+   * @returns {void}
+   */
   deleteProduct(): void {
     // Open confirmation dialog
     this.dialog
@@ -232,8 +301,13 @@ export class ProductListComponent {
       });
   }
 
-  wipeFilter() {
-    console.log('[List]: wiping filter' + this.filter.nativeElement.value);
+  // Filtering Products
+
+  /**
+   * Wipes the filter bar value when a new category is selected.
+   * @returns {void}
+   */
+  wipeFilter(): void {
     this.filter.nativeElement.value = '';
   }
 }

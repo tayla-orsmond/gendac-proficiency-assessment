@@ -51,8 +51,7 @@ $gendac-proficiency-assessment-primary-pallette: (
     800: #003663,
     900: #00294C,
     // create contrasts of the primary color
-    contrast: (
-        50: rgba(black, 0.87),
+    contrast: (50: rgba(black, 0.87),
         100: rgba(black, 0.87),
         200: rgba(black, 0.87),
         300: white,
@@ -61,8 +60,7 @@ $gendac-proficiency-assessment-primary-pallette: (
         600: white,
         700: white,
         800: white,
-        900: white
-    )
+        900: white)
 );
 
 $gendac-proficiency-assessment-accent-pallette: (
@@ -78,8 +76,7 @@ $gendac-proficiency-assessment-accent-pallette: (
     800: #9D1C23,
     900: #89181F,
     // create contrasts of the accent color
-    contrast: (
-        50: rgba(0, 0, 0, 0.87),
+    contrast: (50: rgba(0, 0, 0, 0.87),
         100: rgba(0, 0, 0, 0.87),
         200: rgba(0, 0, 0, 0.87),
         300: white,
@@ -88,8 +85,7 @@ $gendac-proficiency-assessment-accent-pallette: (
         600: white,
         700: white,
         800: white,
-        900: white
-    )
+        900: white)
 );
 
 $gendac-proficiency-assessment-tertiary-pallette: (
@@ -105,8 +101,7 @@ $gendac-proficiency-assessment-tertiary-pallette: (
     800: #003663,
     900: #00294C,
     // create contrasts of the tertiary color
-    contrast: (
-        50: rgba(black, 0.87),
+    contrast: (50: rgba(black, 0.87),
         100: rgba(black, 0.87),
         200: rgba(black, 0.87),
         300: white,
@@ -115,8 +110,7 @@ $gendac-proficiency-assessment-tertiary-pallette: (
         600: white,
         700: white,
         800: white,
-        900: white
-    )
+        900: white)
 );
 
 $gendac-proficiency-assessment-warn-pallette: (
@@ -132,8 +126,7 @@ $gendac-proficiency-assessment-warn-pallette: (
     800: #9D1C23,
     900: #89181F,
     // create contrasts of the warn color
-    contrast: (
-        50: rgba(0, 0, 0, 0.87),
+    contrast: (50: rgba(0, 0, 0, 0.87),
         100: rgba(0, 0, 0, 0.87),
         200: rgba(0, 0, 0, 0.87),
         300: white,
@@ -142,6 +135,5 @@ $gendac-proficiency-assessment-warn-pallette: (
         600: white,
         700: white,
         800: white,
-        900: white
-    )
+        900: white)
 );
