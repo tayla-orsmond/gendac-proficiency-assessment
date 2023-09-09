@@ -29,7 +29,7 @@
     </div>
 
     <div class="table-container">
-        <mat-table [hidden]="!(dataSource.loading$ | async)" #table matSort matSortActive="id" matSortDirection="asc"
+        <mat-table #table matSort matSortActive="id" matSortDirection="asc"
             matSortDisableClear aria-label="products">
             <ng-container matColumnDef="select">
                 <mat-header-cell *matHeaderCellDef>
@@ -80,7 +80,7 @@
         </mat-table>
     </div>
 
-    <mat-paginator [hidden]="!(dataSource.loading$ | async)" [pageSizeOptions]="[5, 10, 25, 100, 1000]"
+    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100, 1000]"
         showFirstLastButtons="true" [length]="10001" [pageSize]="10"
         aria-label="Select page of products"></mat-paginator>
 </div>

@@ -1,0 +1,10 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center">
+    <h2>Confirm {{data.title}}?</h2>
+    <div>
+        {{data.message}}
+    </div>
+    <div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between center">
+        <button mat-button mat-dialog-close>Cancel</button>
+        <button class="confirm" mat-button [mat-dialog-close]="true" cdkFocusInitial (click)="confirm()">Confirm</button>
+    </div>
+</div>

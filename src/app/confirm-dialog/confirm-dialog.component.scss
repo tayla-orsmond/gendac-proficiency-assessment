@@ -1,0 +1,11 @@
+/* Confirm Dialog Styles */
+@use 'src/styles/variables.scss' as *;
+@use 'src/styles/mixins.scss' as *;
+
+button {
+    @include button-tertiary;
+}
+
+.confirm {
+    @include button-secondary;
+}

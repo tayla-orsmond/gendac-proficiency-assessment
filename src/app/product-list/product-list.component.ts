@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   ViewChild,
@@ -20,6 +21,7 @@ import {
 import { MatTable } from '@angular/material/table';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProductDetailsComponent } from '../product-details/product-details.component';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-product-list',
@@ -50,7 +52,8 @@ export class ProductListComponent {
 
   constructor(
     private productService: ProductService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -70,6 +73,8 @@ export class ProductListComponent {
         'none'
       );
       this.table.dataSource = this.dataSource;
+      this.cd.detectChanges();
+      console.log('[List]: productChangeEvent subscription, product:', product);
     });
 
     fromEvent(this.filter.nativeElement, 'keyup')
@@ -97,13 +102,27 @@ export class ProductListComponent {
     merge(this.sort.sortChange, this.paginator.page)
       .pipe()
       .subscribe(() => {
+        console.log(
+          '[List]: sort or page event, page no:' +
+            this.paginator.pageIndex +
+            ' page size:' +
+            this.paginator.pageSize +
+            ' sort active:' +
+            this.sort.active +
+            ' sort direction:' +
+            this.sort.direction +
+            ' filter:' +
+            this.filter.nativeElement.value +
+            ' category:' +
+            this.selectedCategory
+        );
         this.loadProductsPage(
-          '',
+          this.filter.nativeElement.value,
           this.sort.direction === 'asc',
           this.paginator.pageIndex,
           this.paginator.pageSize,
           this.sort.active,
-          'none'
+          this.selectedCategory
         );
       });
   }
@@ -166,27 +185,39 @@ export class ProductListComponent {
   }
 
   deleteProduct(): void {
-    // Confirm deletion
-    if (!confirm('Are you sure you want to delete the selected products?')) {
-      return;
-    }
-
-    this.dataSource
-      .deleteProduct(this.selection.selected.map((product) => product.Id))
-      .subscribe(() => {
-        setTimeout(() => {
-          // reload the exact same page
-          this.loadProductsPage(
-            this.filter.nativeElement.value,
-            this.sort.direction === 'asc',
-            this.paginator.pageIndex,
-            this.paginator.pageSize,
-            this.sort.active,
-            this.selectedCategory
-          );
-        }, 1000);
+    // Open confirmation dialog
+    this.dialog
+      .open(ConfirmDialogComponent, {
+        data: {
+          title: 'Delete product(s)',
+          message:
+            'Are you sure you want to delete the selected product(s)? This cannot be undone.',
+        },
+        width: '20%',
+        enterAnimationDuration: 300,
+        exitAnimationDuration: 200,
+      })
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) {
+          this.dataSource
+            .deleteProduct(this.selection.selected.map((product) => product.Id))
+            .subscribe(() => {
+              setTimeout(() => {
+                // reload the exact same page
+                this.loadProductsPage(
+                  this.filter.nativeElement.value,
+                  this.sort.direction === 'asc',
+                  this.paginator.pageIndex,
+                  this.paginator.pageSize,
+                  this.sort.active,
+                  this.selectedCategory
+                );
+              }, 1000);
+            });
+          this.selection.clear();
+        }
       });
-    this.selection.clear();
   }
 
   wipeFilter() {
