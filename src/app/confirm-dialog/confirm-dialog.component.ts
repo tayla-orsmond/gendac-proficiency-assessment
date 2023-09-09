@@ -13,6 +13,7 @@ export class ConfirmDialogComponent {
   constructor(@Inject(MAT_DIALOG_DATA) public data : {title : string, message: string}, public dialogRef: MatDialogRef<ConfirmDialogComponent>) { }
 
   ngOnInit(): void {
+    this.dialogRef.disableClose = true; // prevent closing dialog when clicking outside of it
   }
   
   confirm() {

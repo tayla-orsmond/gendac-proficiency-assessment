@@ -40,6 +40,7 @@ export class ProductDetailsComponent {
   // Lifecycle Hooks
   ngOnInit(): void {
     this.populateForm();
+    this.dialogRef.disableClose = true; // prevent closing dialog when clicking outside of it
   }
 
   // Helpers

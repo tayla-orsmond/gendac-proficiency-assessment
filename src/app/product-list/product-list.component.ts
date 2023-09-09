@@ -67,7 +67,7 @@ export class ProductListComponent {
       this.loadProductsPage(
         '',
         this.sort.direction === 'asc',
-        this.paginator.pageIndex,
+        this.paginator.pageIndex + 1,
         this.paginator.pageSize,
         this.sort.active,
         'none'
@@ -119,7 +119,7 @@ export class ProductListComponent {
         this.loadProductsPage(
           this.filter.nativeElement.value,
           this.sort.direction === 'asc',
-          this.paginator.pageIndex,
+          this.paginator.pageIndex + 1,
           this.paginator.pageSize,
           this.sort.active,
           this.selectedCategory
@@ -208,7 +208,7 @@ export class ProductListComponent {
                 this.loadProductsPage(
                   this.filter.nativeElement.value,
                   this.sort.direction === 'asc',
-                  this.paginator.pageIndex,
+                  this.paginator.pageIndex + 1,
                   this.paginator.pageSize,
                   this.sort.active,
                   this.selectedCategory
