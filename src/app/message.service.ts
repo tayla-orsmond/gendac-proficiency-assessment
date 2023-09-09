@@ -13,8 +13,18 @@ export class MessageService {
     private productService: ProductService,
     private snackBar: MatSnackBar
   ) {
-    this.productService.productChangeEvent$.subscribe(() => {
-      this.openSnackBar('Productlist updated!', '', 2000);
+    this.productService.productChangeEvent$.subscribe((res) => {
+      if(res === 'add') {
+        this.openSnackBar('Product added Successfully!', '', 2000, '.success-snackbar');
+      }
+      else if(res === 'update') {
+        this.openSnackBar('Product updated Successfully!', '', 2000, '.success-snackbar');
+      }
+      else if(res === '') {
+        this.openSnackBar('Products loaded Successfully!', '', 2000, '.success-snackbar');
+      } else if (res.includes('error')) {
+        this.openSnackBar(res, '', 2000, '.error-snackbar');
+      }
     });
   }
 
@@ -26,9 +36,11 @@ export class MessageService {
     this.message = '';
   }
 
-  openSnackBar(message: string, action: string, duration: number): void {
+  openSnackBar(message: string, action: string, duration: number, panelClass : string): void {
     this.snackBar.open(message, action, {
       duration: duration,
+      panelClass: panelClass
     });
+    console.log('openSnackBar in message.service.ts, passing value', message, 'to PRODUCTS');
   }
 }

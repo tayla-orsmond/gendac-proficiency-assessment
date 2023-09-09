@@ -1,6 +1,12 @@
 /* Service for managing products */
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, finalize, map, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  map,
+  of,
+} from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Product } from './product';
@@ -10,7 +16,7 @@ import { Product } from './product';
 })
 export class ProductService {
   // Editing a product - passing data between product component and product-detail form component
-  private productChangeEvent = new BehaviorSubject<Product>({} as Product);
+  private productChangeEvent = new BehaviorSubject<string>('');
   public productChangeEvent$ = this.productChangeEvent.asObservable();
 
   private httpOptions = {
@@ -65,27 +71,20 @@ export class ProductService {
   addProduct(product: Product): void {
     // make http request to add product
     this.http
-      .post<Product>(this.productsUrl, product, this.httpOptions).pipe(
-        finalize(() => {
-          console.log(
-            'addProduct in product.service.ts, emitting value',
-            product,
-            'to productChangeEvent'
-          );
-          this.productChangeEvent.next(product);
-          console.log(
-            this.productChangeEvent.getValue().Name +
-              ' changed value in product.service.ts'
-          );
-        }
-      ))
+      .post<Product>(this.productsUrl, product, this.httpOptions)
+      .pipe(
+        catchError((err) => {
+          this.productChangeEvent.next('error: ' + err.message);
+          return of(err);
+        })
+      )
       .subscribe((product) => {
         console.log(
           'addProduct in product.service.ts, passing value',
           product,
           'to PRODUCTS'
         );
-        this.productChangeEvent.next(product);
+        this.productChangeEvent.next('add');
       });
   }
 
@@ -94,17 +93,9 @@ export class ProductService {
     this.http
       .put<Product>(this.productsUrl + product.Id, product, this.httpOptions)
       .pipe(
-        finalize(() => {
-          console.log(
-            'updateProduct in product.service.ts, emitting value',
-            product,
-            'to productChangeEvent'
-          );
-          this.productChangeEvent.next(product);
-          console.log(
-            this.productChangeEvent.getValue() +
-              ' changed value in product.service.ts'
-          );
+        catchError((err) => {
+          this.productChangeEvent.next('error: ' + err.message);
+          return of(err);
         })
       )
       .subscribe((product) => {
@@ -113,7 +104,7 @@ export class ProductService {
           product,
           'to PRODUCTS'
         );
-        this.productChangeEvent.next(product);
+        this.productChangeEvent.next('update');
       });
   }
 
