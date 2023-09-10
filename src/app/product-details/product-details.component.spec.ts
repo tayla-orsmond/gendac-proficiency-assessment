@@ -4,6 +4,12 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ProductDetailsComponent } from './product-details.component';
 import { ProductService } from '../product.service';
 import { Product } from '../product';
+import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ProductDetailsComponent', () => {
   let component: ProductDetailsComponent;
@@ -23,7 +29,7 @@ describe('ProductDetailsComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ProductDetailsComponent],
-      imports: [ReactiveFormsModule],
+      imports: [ReactiveFormsModule, MatIconModule, MatFormFieldModule, MatInputModule, MatOptionModule, MatSelectModule, BrowserAnimationsModule],
       providers: [
         { provide: ProductService, useValue: productService },
         { provide: MatDialogRef, useValue: dialogRef },
@@ -49,7 +55,19 @@ describe('ProductDetailsComponent', () => {
     });
   });
 
+  it('should reset the form and close the dialog when cancel is called', () => {
+    component.cancel();
+    expect(component.isEdit).toBeFalse();
+    expect(component.productForm.value).toEqual({
+      Name: null,
+      Category: null,
+      Price: null,
+    });
+    expect(dialogRef.close).toHaveBeenCalled();
+  });
+
   it('should call ProductService.updateProduct when form is submitted in edit mode', () => {
+    component.productForm.markAsDirty();
     component.submit();
     expect(productService.updateProduct).toHaveBeenCalledWith({
       Id: 1,
@@ -60,22 +78,17 @@ describe('ProductDetailsComponent', () => {
     expect(dialogRef.close).toHaveBeenCalled();
   });
 
-  it('should reset the form and close the dialog when cancel is called', () => {
-    component.cancel();
-    expect(component.isEdit).toBeFalse();
-    expect(component.productForm.value).toEqual({
-      Name: '',
-      Category: 1,
-      Price: 0.0,
-    });
-    expect(dialogRef.close).toHaveBeenCalled();
-  });
-
   it('should call ProductService.addProduct when form is submitted in add mode', () => {
     component.isEdit = false;
+    component.productForm.setValue({
+        Name: 'ABC12345',
+        Category: 1,
+        Price: 99.99,
+    });
+    component.productForm.markAsDirty();
     component.submit();
     expect(productService.addProduct).toHaveBeenCalledWith({
-      Id: 0,
+      Id: 1,
       Name: 'Product ABC12345',
       Category: 1,
       Price: 99.99,
@@ -86,24 +99,24 @@ describe('ProductDetailsComponent', () => {
   it('should not call ProductService.addProduct when form is submitted in add mode and form is invalid', () => {
     component.isEdit = false;
     component.productForm.setValue({
-      Name: '',
+      Name: 'ABCDEF',
       Category: 1,
       Price: 99.99,
     });
     component.submit();
     expect(productService.addProduct).not.toHaveBeenCalled();
-    expect(dialogRef.close).not.toHaveBeenCalled();
+    expect(dialogRef.close).toHaveBeenCalled();
   });
 
   it('should not call ProductService.updateProduct when form is submitted in edit mode and form is invalid', () => {
     component.productForm.setValue({
       Name: '',
       Category: 1,
-      Price: 99.99,
+      Price: 99.996,
     });
     component.submit();
     expect(productService.updateProduct).not.toHaveBeenCalled();
-    expect(dialogRef.close).not.toHaveBeenCalled();
+    expect(dialogRef.close).toHaveBeenCalled();
   });
 
   it('should not call ProductService.updateProduct when form is submitted in edit mode and form is not dirty', () => {

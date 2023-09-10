@@ -89,8 +89,8 @@ export class ProductDetailsComponent {
       } else {
         this.productService.addProduct(product);
       }
-      this.cancel(); // close form and reset
     }
+    this.cancel(); // close form and reset
   }
 
   /**

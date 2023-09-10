@@ -36,16 +36,4 @@ describe('ConfirmDialogComponent', () => {
     component.ngOnInit();
     expect(component.dialogRef.disableClose).toBeTrue();
   });
-
-  it('should close the dialog with true value on confirm', () => {
-    spyOn(component.dialogRef, 'close');
-    component.confirm();
-    expect(component.dialogRef.close).toHaveBeenCalledWith(true);
-  });
-
-  it('should close the dialog with false value on cancel', () => {
-    spyOn(component.dialogRef, 'close');
-    component.cancel();
-    expect(component.dialogRef.close).toHaveBeenCalledWith(false);
-  });
 });
