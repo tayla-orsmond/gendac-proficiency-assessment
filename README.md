@@ -44,7 +44,7 @@ src
 │   ├── product-list        # Component for viewing a list of products
 │   ├── message.service.ts  # Service for displaying messages to the user
 │   ├── product.service.ts  # Service for handling product data
-│   ├── product.ts # Product model interface
+│   ├── product.ts          # Product model interface
 |   ├── ...
 ├── assets
 ├── styles                 # Contains _variables.scss and _mixins.scss as well as a reset file
