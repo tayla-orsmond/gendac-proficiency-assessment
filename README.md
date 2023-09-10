@@ -93,4 +93,6 @@ node -v
 
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io). Due to time constraints, only a few unit tests have been written for this project. The tests can be found in the each component's respective `.spec.ts` file.
+Unit tests are available for the `confirm-dialog` and `product-details` components.
+
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io). Due to time constraints, only a few basic unit tests have been written for this project. The tests can be found in the each component's respective `.spec.ts` file in their respective folders.
